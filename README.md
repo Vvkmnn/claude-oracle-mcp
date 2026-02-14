@@ -15,13 +15,13 @@ Requirements:
 **From shell:**
 
 ```bash
-claude mcp add claude-oracle-mcp -- npx claude-oracle-mcp
+claude mcp add claude-oracle-mcp -- bunx claude-oracle-mcp
 ```
 
 **From inside Claude** (restart required):
 
 ```
-Add this to our global mcp config: npx claude-oracle-mcp
+Add this to our global mcp config: bunx claude-oracle-mcp
 
 Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
 ```
@@ -32,7 +32,7 @@ Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
 {
   "mcpServers": {
     "claude-oracle-mcp": {
-      "command": "npx",
+      "command": "bunx",
       "args": ["claude-oracle-mcp"],
       "env": {
         "SKILLSMP_API_KEY": "optional-for-semantic-search"
@@ -44,7 +44,7 @@ Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
 
 That's it; there is **no `npm install` required** as there are no external dependencies or local databases, only search algorithms.
 
-However, in the unlikely event that you pull the wrong package / `npx` registry is out of date, you can force resolution issues in certain environments with:
+However, in the unlikely event that you pull the wrong package / `bunx` registry is out of date, you can force resolution issues in certain environments with:
 
 ```bash
 npm install -g claude-oracle-mcp
@@ -55,7 +55,7 @@ npm install -g claude-oracle-mcp
 Optionally, install the skill to teach Claude when to proactively use oracle:
 
 ```bash
-npx skills add Vvkmnn/claude-oracle-mcp --skill claude-oracle --global
+bunx skills add Vvkmnn/claude-oracle-mcp --skill claude-oracle --global
 ```
 
 This makes Claude automatically search for relevant tools before planning, when encountering errors, or at session start. The MCP works without the skill, but the skill improves discoverability.
@@ -84,12 +84,12 @@ Search across all resources for relevant tools and solutions.
 │ • postgres-mcp (mcp)                        │
 │   PostgreSQL database access                │
 │   smithery.ai • ⭐ verified                 │
-│   Install: npx postgres-mcp                 │
+│   Install: bunx postgres-mcp                │
 │                                             │
 │ • postgresql-mcp (mcp)                      │
 │   PostgreSQL MCP server                     │
 │   npmjs.com • ✨ quality                    │
-│   Install: npx @scope/postgresql-mcp        │
+│   Install: bunx @scope/postgresql-mcp       │
 │                                             │
 │ Total: 17 sources • 15,000+ resources       │
 └─────────────────────────────────────────────┘
@@ -209,24 +209,25 @@ Ask a question, get install commands:
 
 **Zero-config sources (16/17):**
 
-| Source | Type | Count | Method |
-|--------|------|-------|--------|
-| Smithery Registry | MCP | 500 | REST API (5 pages) |
-| Playbooks | MCP | 1,000+ | XML Sitemaps |
-| Official MCP Registry | MCP | 248 | REST API (3 iterations) |
-| npm Registry | MCP/Plugin | 250 | Search API (1 page) |
-| Glama.ai | MCP | 662 | RSS Feed |
-| wong2/awesome-mcp-servers | MCP | 200+ | GitHub Markdown |
-| punkpeye/awesome-mcp-servers | MCP | 400+ | GitHub Markdown |
-| collabnix/awesome-mcp-lists | MCP | 100+ | GitHub Markdown |
-| jmanhype/awesome-claude-code | Plugin/Skill | 50+ | GitHub Markdown |
-| hesreallyhim/awesome-claude-code | Skill | 200+ | GitHub Markdown |
-| awesome-agent-skills | Skill | 339 | GitHub Markdown |
-| claude-code-plugins-plus | Plugin | 258 | Marketplace JSON |
-| claude-plugins-official | Plugin | 45 | Marketplace JSON |
-| superpowers-marketplace | Plugin | - | Marketplace JSON |
+| Source                           | Type         | Count  | Method                  |
+| -------------------------------- | ------------ | ------ | ----------------------- |
+| Smithery Registry                | MCP          | 500    | REST API (5 pages)      |
+| Playbooks                        | MCP          | 1,000+ | XML Sitemaps            |
+| Official MCP Registry            | MCP          | 248    | REST API (3 iterations) |
+| npm Registry                     | MCP/Plugin   | 250    | Search API (1 page)     |
+| Glama.ai                         | MCP          | 662    | RSS Feed                |
+| wong2/awesome-mcp-servers        | MCP          | 200+   | GitHub Markdown         |
+| punkpeye/awesome-mcp-servers     | MCP          | 400+   | GitHub Markdown         |
+| collabnix/awesome-mcp-lists      | MCP          | 100+   | GitHub Markdown         |
+| jmanhype/awesome-claude-code     | Plugin/Skill | 50+    | GitHub Markdown         |
+| hesreallyhim/awesome-claude-code | Skill        | 200+   | GitHub Markdown         |
+| awesome-agent-skills             | Skill        | 339    | GitHub Markdown         |
+| claude-code-plugins-plus         | Plugin       | 258    | Marketplace JSON        |
+| claude-plugins-official          | Plugin       | 45     | Marketplace JSON        |
+| superpowers-marketplace          | Plugin       | -      | Marketplace JSON        |
 
 **Optional (requires API key):**
+
 - **SkillsMP**: 25,000+ skills with semantic search ([get key](https://skillsmp.com))
 
 > **Note:** Pagination is limited for faster responses (~3s). Full datasets available through caching on subsequent searches.
@@ -245,7 +246,7 @@ npm run build
 - **Node.js**: >=20.0.0 (ES modules)
 - **npm**: >=10.0.0 (package-lock v3)
 - **Runtime**: `@modelcontextprotocol/sdk`, `fast-xml-parser`
-- **Zero external databases** - works with `npx`
+- **Zero external databases** - works with `bunx`
 
 **Development workflow:**
 
@@ -267,6 +268,6 @@ node dist/index.js     # Run MCP server directly (stdio)
 
 ---
 
-![Oracle of Delphi](https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/John_Collier_-_Priestess_of_Delphi.jpg/512px-John_Collier_-_Priestess_of_Delphi.jpg)
+![Aeneas and the Cumaean Sibyl](logo/oracle.jpg)
 
-_Priestess of Delphi (1891) by John Collier - The Oracle who divined the future_
+_Aeneas consulting the Cumaean Sibyl by Claude Mellan - The oracle who guided him through the underworld_
