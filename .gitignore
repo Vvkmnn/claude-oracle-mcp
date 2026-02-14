@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Demo files (keep only demo.gif)
+demo.mov
+demo/*.mp4
+demo/*.cast
+demo/palette.png
+demo/DEMO_SCRIPT.md
+demo/RECORD.sh
+demo/demo.old.cast
+
+# Local configuration
+.claude/*
+!.claude/skills/
+.mcp.json
+test-mcp.json
+test_search.sh
+
+# Development
+*.log
+*.tmp

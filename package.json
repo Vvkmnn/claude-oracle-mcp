@@ -1,0 +1,45 @@
+{
+  "name": "claude-oracle",
+  "version": "0.1.0",
+  "description": "MCP server for discovering Claude Code skills, plugins, and MCP servers from multiple sources",
+  "type": "module",
+  "bin": {
+    "claude-oracle": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "bun run src/index.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "claude",
+    "claude-code",
+    "skills",
+    "plugins",
+    "discovery",
+    "agent-skills"
+  ],
+  "author": "Vvkmnn",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vvkmnn/claude-oracle.git"
+  },
+  "homepage": "https://github.com/vvkmnn/claude-oracle#readme",
+  "bugs": {
+    "url": "https://github.com/vvkmnn/claude-oracle/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "fast-xml-parser": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
