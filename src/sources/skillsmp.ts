@@ -1,7 +1,7 @@
-import type { Resource, SkillsmpResponse, SkillsmpResult } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, SkillsmpResponse, SkillsmpResult } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const SKILLSMP_BASE_URL = "https://skillsmp.com/api/v1/skills";
+const SKILLSMP_BASE_URL = 'https://skillsmp.com/api/v1/skills';
 
 /**
  * Get API key from environment
@@ -21,14 +21,14 @@ export function isSkillsmpAvailable(): boolean {
  * Parse SkillsMP result to unified Resource format
  */
 function parseSkillsmpResult(result: SkillsmpResult): Resource {
-  const marketplace = result.marketplace || "skillsmp";
+  const marketplace = result.marketplace || 'skillsmp';
 
   return {
     name: result.name,
-    description: result.description?.slice(0, 200) || "No description",
-    type: "skill",
+    description: result.description?.slice(0, 200) || 'No description',
+    type: 'skill',
     install_command: `/plugin install ${result.name}@${marketplace}`,
-    source: "skillsmp",
+    source: 'skillsmp',
     url: result.github_url,
     category: result.category,
     stars: result.downloads, // Using downloads as popularity metric
@@ -48,13 +48,13 @@ export async function searchSkillsmp(
   }
 
   const { semantic = false, limit = 10 } = options;
-  const cacheKey = `skillsmp:${semantic ? "ai" : "kw"}:${query}:${limit}`;
+  const cacheKey = `skillsmp:${semantic ? 'ai' : 'kw'}:${query}:${limit}`;
 
   const cached = cache.get<Resource[]>(cacheKey);
   if (cached) return cached;
 
   try {
-    const endpoint = semantic ? "ai-search" : "search";
+    const endpoint = semantic ? 'ai-search' : 'search';
     const url = `${SKILLSMP_BASE_URL}/${endpoint}?q=${encodeURIComponent(query)}&limit=${limit}`;
 
     const response = await fetch(url, {
@@ -66,7 +66,7 @@ export async function searchSkillsmp(
 
     if (!response.ok) {
       if (response.status === 401) {
-        console.error("SkillsMP: Invalid API key");
+        console.error('SkillsMP: Invalid API key');
       } else {
         console.error(`SkillsMP error: ${response.status}`);
       }
@@ -79,7 +79,7 @@ export async function searchSkillsmp(
     cache.set(cacheKey, skills, TTL.SKILLSMP);
     return skills;
   } catch (error) {
-    console.error("Error searching SkillsMP:", error);
+    console.error('Error searching SkillsMP:', error);
     return [];
   }
 }
@@ -90,10 +90,10 @@ export async function searchSkillsmp(
 export function getSkillsmpSource() {
   const hasKey = isSkillsmpAvailable();
   return {
-    name: "skillsmp",
-    type: "skill" as const,
+    name: 'skillsmp',
+    type: 'skill' as const,
     count: hasKey ? 25000 : 0, // Estimated
     last_updated: new Date().toISOString(),
-    status: hasKey ? ("ok" as const) : ("no_key" as const),
+    status: hasKey ? ('ok' as const) : ('no_key' as const),
   };
 }

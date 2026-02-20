@@ -1,14 +1,16 @@
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const WONG2_URL = "https://raw.githubusercontent.com/wong2/awesome-mcp-servers/main/README.md";
-const CACHE_KEY = "awesome-mcp-wong2";
+const WONG2_URL = 'https://raw.githubusercontent.com/wong2/awesome-mcp-servers/main/README.md';
+const CACHE_KEY = 'awesome-mcp-wong2';
 
 /**
  * Parse markdown list item
  * Handles formats like: - [Name](url) - description
  */
-function parseMarkdownListItem(line: string): { name: string; url: string; description: string } | null {
+function parseMarkdownListItem(
+  line: string
+): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
@@ -26,7 +28,7 @@ function parseMarkdownListItem(line: string): { name: string; url: string; descr
  */
 function parseMarkdown(content: string): Resource[] {
   const resources: Resource[] = [];
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const seen = new Set<string>();
 
   for (const line of lines) {
@@ -43,16 +45,16 @@ function parseMarkdown(content: string): Resource[] {
       const repoMatch = parsed.url.match(/github\.com\/([^/]+\/[^/]+)/);
 
       if (repoMatch) {
-        const repo = repoMatch[1].replace(/\.git$/, "");
+        const repo = repoMatch[1].replace(/\.git$/, '');
         install_command = `# See ${parsed.url} for installation instructions`;
 
         // Try to infer package name from repo
-        const packageName = repo.split("/")[1];
+        const packageName = repo.split('/')[1];
         config_snippet = JSON.stringify(
           {
             mcpServers: {
               [packageName]: {
-                command: "See repository for installation",
+                command: 'See repository for installation',
                 args: [],
               },
             },
@@ -66,11 +68,11 @@ function parseMarkdown(content: string): Resource[] {
 
       resources.push({
         name: parsed.name,
-        description: parsed.description || "No description",
-        type: "mcp",
+        description: parsed.description || 'No description',
+        type: 'mcp',
         install_command,
         config_snippet,
-        source: "wong2/awesome-mcp-servers",
+        source: 'wong2/awesome-mcp-servers',
         url: parsed.url,
       });
     }
@@ -101,7 +103,7 @@ export async function fetchWong2AwesomeMcp(): Promise<Resource[]> {
     cache.set(CACHE_KEY, resources, TTL.AWESOME_LISTS);
     return resources;
   } catch (error) {
-    console.error("Error fetching wong2/awesome-mcp-servers:", error);
+    console.error('Error fetching wong2/awesome-mcp-servers:', error);
     return [];
   }
 }
@@ -112,10 +114,10 @@ export async function fetchWong2AwesomeMcp(): Promise<Resource[]> {
 export function getWong2AwesomeMcpSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "wong2/awesome-mcp-servers",
-    type: "mcp",
+    name: 'wong2/awesome-mcp-servers',
+    type: 'mcp',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

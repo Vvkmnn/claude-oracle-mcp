@@ -1,5 +1,5 @@
-import type { Resource, ResourceType } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, ResourceType } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
 interface AwesomeListConfig {
   url: string;
@@ -10,15 +10,15 @@ interface AwesomeListConfig {
 
 const AWESOME_LISTS: AwesomeListConfig[] = [
   {
-    url: "https://raw.githubusercontent.com/punkpeye/awesome-mcp-servers/main/README.md",
-    name: "awesome-mcp-servers",
-    type: "mcp",
+    url: 'https://raw.githubusercontent.com/punkpeye/awesome-mcp-servers/main/README.md',
+    name: 'awesome-mcp-servers',
+    type: 'mcp',
   },
   {
-    url: "https://raw.githubusercontent.com/travisvn/awesome-claude-skills/main/README.md",
-    name: "awesome-claude-skills",
-    type: "skill",
-    marketplace: "github",
+    url: 'https://raw.githubusercontent.com/travisvn/awesome-claude-skills/main/README.md',
+    name: 'awesome-claude-skills',
+    type: 'skill',
+    marketplace: 'github',
   },
 ];
 
@@ -41,7 +41,7 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
   const plainMatch = row.match(/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|?/);
   if (plainMatch) {
     const url = plainMatch[3].trim();
-    if (url.startsWith("http")) {
+    if (url.startsWith('http')) {
       return {
         name: plainMatch[1].trim(),
         description: plainMatch[2].trim(),
@@ -57,7 +57,9 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
  * Parse markdown list item
  * Handles formats like: - [Name](url) - description
  */
-function parseMarkdownListItem(line: string): { name: string; url: string; description: string } | null {
+function parseMarkdownListItem(
+  line: string
+): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
@@ -73,12 +75,9 @@ function parseMarkdownListItem(line: string): { name: string; url: string; descr
 /**
  * Extract resources from markdown content
  */
-function parseMarkdown(
-  content: string,
-  config: AwesomeListConfig
-): Resource[] {
+function parseMarkdown(content: string, config: AwesomeListConfig): Resource[] {
   const resources: Resource[] = [];
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const seen = new Set<string>();
 
   for (const line of lines) {
@@ -97,7 +96,7 @@ function parseMarkdown(
       let install_command: string;
       let config_snippet: string | undefined;
 
-      if (config.type === "mcp") {
+      if (config.type === 'mcp') {
         // Extract repo from GitHub URL
         const repoMatch = parsed.url.match(/github\.com\/([^/]+\/[^/]+)/);
         const repo = repoMatch ? repoMatch[1] : parsed.name;
@@ -105,16 +104,16 @@ function parseMarkdown(
         config_snippet = JSON.stringify(
           {
             mcpServers: {
-              [parsed.name.toLowerCase().replace(/\s+/g, "-")]: {
-                command: "npx",
-                args: ["-y", repo],
+              [parsed.name.toLowerCase().replace(/\s+/g, '-')]: {
+                command: 'npx',
+                args: ['-y', repo],
               },
             },
           },
           null,
           2
         );
-      } else if (config.type === "skill" && config.marketplace) {
+      } else if (config.type === 'skill' && config.marketplace) {
         install_command = `/plugin install ${parsed.name}@${config.marketplace}`;
       } else {
         install_command = `See: ${parsed.url}`;
@@ -122,7 +121,7 @@ function parseMarkdown(
 
       resources.push({
         name: parsed.name,
-        description: parsed.description || "No description",
+        description: parsed.description || 'No description',
         type: config.type,
         install_command,
         config_snippet,
@@ -181,8 +180,8 @@ export function getAwesomeListsSources() {
       name: config.name,
       type: config.type,
       count: cached?.length || 0,
-      last_updated: cached ? new Date().toISOString() : "never",
-      status: cached ? ("ok" as const) : ("stale" as const),
+      last_updated: cached ? new Date().toISOString() : 'never',
+      status: cached ? ('ok' as const) : ('stale' as const),
     };
   });
 }

@@ -1,9 +1,9 @@
-import { XMLParser } from "fast-xml-parser";
-import type { Resource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import { XMLParser } from 'fast-xml-parser';
+import type { Resource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const GLAMA_RSS_URL = "https://glama.ai/mcp/servers/feeds/recent-servers.xml";
-const CACHE_KEY = "glama:mcp-servers";
+const GLAMA_RSS_URL = 'https://glama.ai/mcp/servers/feeds/recent-servers.xml';
+const CACHE_KEY = 'glama:mcp-servers';
 
 interface RssItem {
   title: string;
@@ -28,8 +28,8 @@ function parseRssItem(item: RssItem): Resource {
   const categories = Array.isArray(item.category)
     ? item.category
     : item.category
-    ? [item.category]
-    : [];
+      ? [item.category]
+      : [];
 
   // Extract repo name from GitHub URL for install command
   const repoMatch = item.link?.match(/github\.com\/([^/]+\/[^/]+)/);
@@ -37,22 +37,22 @@ function parseRssItem(item: RssItem): Resource {
 
   return {
     name: item.title,
-    description: item.description?.slice(0, 200) || "No description",
-    type: "mcp",
+    description: item.description?.slice(0, 200) || 'No description',
+    type: 'mcp',
     install_command: `npx -y ${repoName}`,
     config_snippet: JSON.stringify(
       {
         mcpServers: {
-          [item.title.toLowerCase().replace(/\s+/g, "-")]: {
-            command: "npx",
-            args: ["-y", repoName],
+          [item.title.toLowerCase().replace(/\s+/g, '-')]: {
+            command: 'npx',
+            args: ['-y', repoName],
           },
         },
       },
       null,
       2
     ),
-    source: "glama.ai",
+    source: 'glama.ai',
     url: item.link,
     category: categories[0],
     keywords: categories,
@@ -79,7 +79,7 @@ export async function fetchGlamaMcpServers(): Promise<Resource[]> {
     const xml = await response.text();
     const parser = new XMLParser({
       ignoreAttributes: false,
-      attributeNamePrefix: "@_",
+      attributeNamePrefix: '@_',
     });
 
     const feed = parser.parse(xml) as RssFeed;
@@ -93,7 +93,7 @@ export async function fetchGlamaMcpServers(): Promise<Resource[]> {
     cache.set(CACHE_KEY, servers, TTL.MCP_SERVERS);
     return servers;
   } catch (error) {
-    console.error("Error fetching Glama RSS:", error);
+    console.error('Error fetching Glama RSS:', error);
     return [];
   }
 }
@@ -104,10 +104,10 @@ export async function fetchGlamaMcpServers(): Promise<Resource[]> {
 export function getGlamaSource() {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "glama.ai",
-    type: "mcp" as const,
+    name: 'glama.ai',
+    type: 'mcp' as const,
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? ("ok" as const) : ("stale" as const),
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? ('ok' as const) : ('stale' as const),
   };
 }

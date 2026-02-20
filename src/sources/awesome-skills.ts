@@ -1,8 +1,9 @@
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const AWESOME_SKILLS_URL = "https://raw.githubusercontent.com/VoltAgent/awesome-agent-skills/main/README.md";
-const CACHE_KEY = "awesome:agent-skills";
+const AWESOME_SKILLS_URL =
+  'https://raw.githubusercontent.com/VoltAgent/awesome-agent-skills/main/README.md';
+const CACHE_KEY = 'awesome:agent-skills';
 
 /**
  * Parse markdown table row to extract name, description, and URL
@@ -23,7 +24,7 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
   const plainMatch = row.match(/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|?/);
   if (plainMatch) {
     const url = plainMatch[3].trim();
-    if (url.startsWith("http")) {
+    if (url.startsWith('http')) {
       return {
         name: plainMatch[1].trim(),
         description: plainMatch[2].trim(),
@@ -39,7 +40,9 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
  * Parse markdown list item
  * Handles formats like: - [Name](url) - description
  */
-function parseMarkdownListItem(line: string): { name: string; url: string; description: string } | null {
+function parseMarkdownListItem(
+  line: string
+): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
@@ -57,7 +60,7 @@ function parseMarkdownListItem(line: string): { name: string; url: string; descr
  */
 function parseMarkdown(content: string): Resource[] {
   const resources: Resource[] = [];
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const seen = new Set<string>();
 
   for (const line of lines) {
@@ -90,10 +93,10 @@ function parseMarkdown(content: string): Resource[] {
 
       resources.push({
         name: parsed.name,
-        description: parsed.description || "No description",
-        type: "skill",
+        description: parsed.description || 'No description',
+        type: 'skill',
         install_command,
-        source: "awesome-agent-skills",
+        source: 'awesome-agent-skills',
         url: parsed.url,
       });
     }
@@ -124,7 +127,7 @@ export async function fetchAwesomeSkills(): Promise<Resource[]> {
     cache.set(CACHE_KEY, resources, TTL.AWESOME_LISTS);
     return resources;
   } catch (error) {
-    console.error("Error fetching awesome-agent-skills:", error);
+    console.error('Error fetching awesome-agent-skills:', error);
     return [];
   }
 }
@@ -135,10 +138,10 @@ export async function fetchAwesomeSkills(): Promise<Resource[]> {
 export function getAwesomeSkillsSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "awesome-agent-skills",
-    type: "skill",
+    name: 'awesome-agent-skills',
+    type: 'skill',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

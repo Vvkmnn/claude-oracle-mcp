@@ -1,17 +1,17 @@
-import type { Resource, DataSource, SearchOutput } from "./types.js";
+import type { Resource, DataSource, SearchOutput } from './types.js';
 
 /**
  * Oracle MCP formatter - beautiful bordered output with 🔮 identifier
  * Pattern: Mirrors historian/praetorian formatting with unique oracle branding
  */
 
-const ORACLE_EMOJI = "🔮";
-const TOP_LEFT = "┌─";
-const TOP_RIGHT = "─┐";
-const SIDE = "│";
-const BOTTOM_LEFT = "└─";
-const BOTTOM_RIGHT = "─┘";
-const HORIZONTAL = "─";
+const ORACLE_EMOJI = '🔮';
+const TOP_LEFT = '╭─';
+const TOP_RIGHT = '─╮';
+const SIDE = '│';
+const BOTTOM_LEFT = '╰─';
+const BOTTOM_RIGHT = '─╯';
+const HORIZONTAL = '─';
 
 /**
  * Create a bordered box with header
@@ -26,7 +26,7 @@ function createBox(header: string, content: string[], width = 65): string {
   }
   lines.push(bottomBorder);
 
-  return lines.join("\n");
+  return lines.join('\n');
 }
 
 /**
@@ -36,9 +36,9 @@ export function formatSearchResults(output: SearchOutput): string {
   const { results, sources_searched, total_available } = output;
 
   if (results.length === 0) {
-    return createBox("No results", [
-      "No matching resources found.",
-      "",
+    return createBox('No results', [
+      'No matching resources found.',
+      '',
       `Searched: ${sources_searched.length} sources • ${total_available.toLocaleString()} total available`,
     ]);
   }
@@ -56,7 +56,7 @@ export function formatSearchResults(output: SearchOutput): string {
       } else {
         content.push(line);
         content.push(`  ${resource.description.slice(0, 60)}...`);
-        line = "";
+        line = '';
       }
     }
 
@@ -64,17 +64,19 @@ export function formatSearchResults(output: SearchOutput): string {
 
     // Source attribution with indicators
     let attribution = `  ${resource.source}`;
-    if (resource.verified) attribution += " • ⭐ verified";
+    if (resource.verified) attribution += ' • ⭐ verified';
     if (resource.stars) attribution += ` • ${resource.stars} stars`;
     if (resource.quality_score && resource.quality_score > 0.7) {
-      attribution += " • ✨ quality";
+      attribution += ' • ✨ quality';
     }
     content.push(attribution);
-    content.push(""); // Empty line between results
+    content.push(''); // Empty line between results
   }
 
   // Summary
-  content.push(`Total: ${sources_searched.length} sources • ${total_available.toLocaleString()} resources available`);
+  content.push(
+    `Total: ${sources_searched.length} sources • ${total_available.toLocaleString()} resources available`
+  );
 
   return createBox(`Found ${results.length}`, content);
 }
@@ -82,11 +84,7 @@ export function formatSearchResults(output: SearchOutput): string {
 /**
  * Format browse results (similar to search but with category context)
  */
-export function formatBrowseResults(output: SearchOutput, category?: string): string {
-  const header = category
-    ? `Category: ${category}`
-    : `Found ${output.results.length}`;
-
+export function formatBrowseResults(output: SearchOutput, _category?: string): string {
   return formatSearchResults({ ...output });
 }
 
@@ -97,22 +95,24 @@ export function formatSources(sources: DataSource[], total: number): string {
   const content: string[] = [];
 
   // Group by type
-  const byType = sources.reduce((acc, source) => {
-    if (!acc[source.type]) acc[source.type] = [];
-    acc[source.type].push(source);
-    return acc;
-  }, {} as Record<string, DataSource[]>);
+  const byType = sources.reduce(
+    (acc, source) => {
+      if (!acc[source.type]) acc[source.type] = [];
+      acc[source.type].push(source);
+      return acc;
+    },
+    {} as Record<string, DataSource[]>
+  );
 
   // Plugin sources
   if (byType.plugin) {
     const pluginTotal = byType.plugin.reduce((sum, s) => sum + s.count, 0);
     content.push(`Plugins (${pluginTotal}):`);
     for (const source of byType.plugin) {
-      const status = source.status === "ok" ? "✓" :
-                    source.status === "no_key" ? "(no key)" : "⚠";
+      const status = source.status === 'ok' ? '✓' : source.status === 'no_key' ? '(no key)' : '⚠';
       content.push(`  • ${source.name}: ${source.count.toLocaleString()} ${status}`);
     }
-    content.push("");
+    content.push('');
   }
 
   // MCP sources
@@ -120,10 +120,10 @@ export function formatSources(sources: DataSource[], total: number): string {
     const mcpTotal = byType.mcp.reduce((sum, s) => sum + s.count, 0);
     content.push(`MCP Servers (${mcpTotal}):`);
     for (const source of byType.mcp) {
-      const status = source.status === "ok" ? "✓" : "⚠";
+      const status = source.status === 'ok' ? '✓' : '⚠';
       content.push(`  • ${source.name}: ${source.count.toLocaleString()} ${status}`);
     }
-    content.push("");
+    content.push('');
   }
 
   // Skill sources
@@ -131,8 +131,7 @@ export function formatSources(sources: DataSource[], total: number): string {
     const skillTotal = byType.skill.reduce((sum, s) => sum + s.count, 0);
     content.push(`Skills (${skillTotal}):`);
     for (const source of byType.skill) {
-      const status = source.status === "ok" ? "✓" :
-                    source.status === "no_key" ? "(no key)" : "⚠";
+      const status = source.status === 'ok' ? '✓' : source.status === 'no_key' ? '(no key)' : '⚠';
       content.push(`  • ${source.name}: ${source.count.toLocaleString()} ${status}`);
     }
   }
@@ -147,7 +146,7 @@ export function formatInstallCommand(resource: Resource): string {
   const lines = [
     `**${resource.name}** (${resource.type})`,
     resource.description,
-    "",
+    '',
     `Install: \`${resource.install_command}\``,
   ];
 
@@ -155,5 +154,5 @@ export function formatInstallCommand(resource: Resource): string {
     lines.push(`Docs: ${resource.url}`);
   }
 
-  return lines.join("\n");
+  return lines.join('\n');
 }

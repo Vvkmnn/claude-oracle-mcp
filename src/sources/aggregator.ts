@@ -1,17 +1,29 @@
-import type { Resource, ResourceType, DataSource, SearchInput, SearchOutput, BrowseInput } from "../types.js";
-import { fetchGithubPlugins, getGithubPluginsSources } from "./github-plugins.js";
-import { fetchGlamaMcpServers, getGlamaSource } from "./glama.js";
-import { fetchAwesomeLists, getAwesomeListsSources } from "./awesome-lists.js";
-import { searchSkillsmp, getSkillsmpSource, isSkillsmpAvailable } from "./skillsmp.js";
-import { fetchSmitheryServers, getSmitherySource } from "./smithery.js";
-import { fetchMcpRegistry, getMcpRegistrySource } from "./mcp-registry.js";
-import { fetchNpmMcpPackages, fetchNpmPluginPackages, getNpmMcpSource, getNpmPluginSource } from "./npm-registry.js";
-import { fetchAwesomeClaudeCode, getAwesomeClaudeCodeSource } from "./awesome-claude-code.js";
-import { fetchAwesomeSkills, getAwesomeSkillsSource } from "./awesome-skills.js";
-import { fetchPlaybooksServers, getPlaybooksSource } from "./playbooks.js";
-import { fetchWong2AwesomeMcp, getWong2AwesomeMcpSource } from "./awesome-mcp-wong2.js";
-import { fetchJmanAwesomeClaude, getJmanAwesomeClaudeSource } from "./awesome-claude-jman.js";
-import { fetchCollabnixAwesomeMcp, getCollabnixAwesomeMcpSource } from "./awesome-mcp-collabnix.js";
+import type {
+  Resource,
+  ResourceType,
+  DataSource,
+  SearchInput,
+  SearchOutput,
+  BrowseInput,
+} from '../types.js';
+import { fetchGithubPlugins, getGithubPluginsSources } from './github-plugins.js';
+import { fetchGlamaMcpServers, getGlamaSource } from './glama.js';
+import { fetchAwesomeLists, getAwesomeListsSources } from './awesome-lists.js';
+import { searchSkillsmp, getSkillsmpSource, isSkillsmpAvailable } from './skillsmp.js';
+import { fetchSmitheryServers, getSmitherySource } from './smithery.js';
+import { fetchMcpRegistry, getMcpRegistrySource } from './mcp-registry.js';
+import {
+  fetchNpmMcpPackages,
+  fetchNpmPluginPackages,
+  getNpmMcpSource,
+  getNpmPluginSource,
+} from './npm-registry.js';
+import { fetchAwesomeClaudeCode, getAwesomeClaudeCodeSource } from './awesome-claude-code.js';
+import { fetchAwesomeSkills, getAwesomeSkillsSource } from './awesome-skills.js';
+import { fetchPlaybooksServers, getPlaybooksSource } from './playbooks.js';
+import { fetchWong2AwesomeMcp, getWong2AwesomeMcpSource } from './awesome-mcp-wong2.js';
+import { fetchJmanAwesomeClaude, getJmanAwesomeClaudeSource } from './awesome-claude-jman.js';
+import { fetchCollabnixAwesomeMcp, getCollabnixAwesomeMcpSource } from './awesome-mcp-collabnix.js';
 
 /**
  * Simple fuzzy matching score
@@ -25,8 +37,8 @@ function matchScore(query: string, resource: Resource): number {
   const q = query.toLowerCase();
   const name = resource.name.toLowerCase();
   const desc = resource.description.toLowerCase();
-  const category = resource.category?.toLowerCase() || "";
-  const keywords = resource.keywords?.map((k) => k?.toLowerCase() || "").filter(k => k) || [];
+  const category = resource.category?.toLowerCase() || '';
+  const keywords = resource.keywords?.map((k) => k?.toLowerCase() || '').filter((k) => k) || [];
 
   let score = 0;
 
@@ -57,8 +69,8 @@ function matchScore(query: string, resource: Resource): number {
 /**
  * Filter resources by type
  */
-function filterByType(resources: Resource[], type: ResourceType | "all"): Resource[] {
-  if (type === "all") return resources;
+function filterByType(resources: Resource[], type: ResourceType | 'all'): Resource[] {
+  if (type === 'all') return resources;
   return resources.filter((r) => r.type === type);
 }
 
@@ -108,17 +120,20 @@ async function fetchAllResources(): Promise<Resource[]> {
 
   const allResources: Resource[] = [];
   for (const result of results) {
-    if (result.status === "fulfilled") {
+    if (result.status === 'fulfilled') {
       allResources.push(...result.value);
     } else {
-      console.error("Source fetch failed:", result.reason);
+      console.error('Source fetch failed:', result.reason);
     }
   }
 
   // Filter for valid resources with non-empty name and description
   return deduplicate(allResources).filter(
-    r => typeof r.name === "string" && r.name.trim() !== "" &&
-         typeof r.description === "string" && r.description.trim() !== ""
+    (r) =>
+      typeof r.name === 'string' &&
+      r.name.trim() !== '' &&
+      typeof r.description === 'string' &&
+      r.description.trim() !== ''
   );
 }
 
@@ -126,33 +141,33 @@ async function fetchAllResources(): Promise<Resource[]> {
  * Search across all sources
  */
 export async function search(input: SearchInput): Promise<SearchOutput> {
-  const { query, type = "all", semantic = false, limit = 5 } = input;
+  const { query, type = 'all', semantic = false, limit = 5 } = input;
   const sourcesSearched: string[] = [];
-  let results: Resource[] = [];
-  let cached = true;
+  const results: Resource[] = [];
+  const cached = true;
 
   // If semantic search requested and SkillsMP available, search there first
   if (semantic && isSkillsmpAvailable()) {
     const skillsmpResults = await searchSkillsmp(query, { semantic: true, limit });
     results.push(...skillsmpResults);
-    sourcesSearched.push("skillsmp (semantic)");
+    sourcesSearched.push('skillsmp (semantic)');
   }
 
   // Fetch all free sources
   const allResources = await fetchAllResources();
   sourcesSearched.push(
-    "github-plugins",
-    "glama.ai",
-    "awesome-lists",
-    "smithery.ai",
-    "modelcontextprotocol.io",
-    "npmjs.com",
-    "awesome-claude-code",
-    "awesome-agent-skills",
-    "playbooks.com",
-    "wong2/awesome-mcp-servers",
-    "jmanhype/awesome-claude-code",
-    "collabnix/awesome-mcp-lists"
+    'github-plugins',
+    'glama.ai',
+    'awesome-lists',
+    'smithery.ai',
+    'modelcontextprotocol.io',
+    'npmjs.com',
+    'awesome-claude-code',
+    'awesome-agent-skills',
+    'playbooks.com',
+    'wong2/awesome-mcp-servers',
+    'jmanhype/awesome-claude-code',
+    'collabnix/awesome-mcp-lists'
   );
 
   // Filter by type
@@ -188,20 +203,20 @@ export async function search(input: SearchInput): Promise<SearchOutput> {
  * Browse by category or list popular items
  */
 export async function browse(input: BrowseInput): Promise<SearchOutput> {
-  const { category, type = "all", sort = "popular", limit = 10 } = input;
+  const { category, type = 'all', sort = 'popular', limit = 10 } = input;
   const sourcesSearched: string[] = [
-    "github-plugins",
-    "glama.ai",
-    "awesome-lists",
-    "smithery.ai",
-    "modelcontextprotocol.io",
-    "npmjs.com",
-    "awesome-claude-code",
-    "awesome-agent-skills",
-    "playbooks.com",
-    "wong2/awesome-mcp-servers",
-    "jmanhype/awesome-claude-code",
-    "collabnix/awesome-mcp-lists",
+    'github-plugins',
+    'glama.ai',
+    'awesome-lists',
+    'smithery.ai',
+    'modelcontextprotocol.io',
+    'npmjs.com',
+    'awesome-claude-code',
+    'awesome-agent-skills',
+    'playbooks.com',
+    'wong2/awesome-mcp-servers',
+    'jmanhype/awesome-claude-code',
+    'collabnix/awesome-mcp-lists',
   ];
 
   const allResources = await fetchAllResources();
@@ -218,9 +233,9 @@ export async function browse(input: BrowseInput): Promise<SearchOutput> {
   }
 
   // Sort
-  if (sort === "popular") {
+  if (sort === 'popular') {
     filtered.sort((a, b) => (b.stars || 0) - (a.stars || 0));
-  } else if (sort === "recent") {
+  } else if (sort === 'recent') {
     filtered.sort((a, b) => {
       const dateA = a.last_updated ? new Date(a.last_updated).getTime() : 0;
       const dateB = b.last_updated ? new Date(b.last_updated).getTime() : 0;

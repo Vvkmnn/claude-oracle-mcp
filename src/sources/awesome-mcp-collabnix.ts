@@ -1,14 +1,17 @@
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const COLLABNIX_URL = "https://raw.githubusercontent.com/collabnix/awesome-mcp-lists/main/README.md";
-const CACHE_KEY = "awesome-mcp-collabnix";
+const COLLABNIX_URL =
+  'https://raw.githubusercontent.com/collabnix/awesome-mcp-lists/main/README.md';
+const CACHE_KEY = 'awesome-mcp-collabnix';
 
 /**
  * Parse markdown list item
  * Handles formats like: - [Name](url) - description
  */
-function parseMarkdownListItem(line: string): { name: string; url: string; description: string } | null {
+function parseMarkdownListItem(
+  line: string
+): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
@@ -26,7 +29,7 @@ function parseMarkdownListItem(line: string): { name: string; url: string; descr
  */
 function parseMarkdown(content: string): Resource[] {
   const resources: Resource[] = [];
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const seen = new Set<string>();
 
   for (const line of lines) {
@@ -40,19 +43,20 @@ function parseMarkdown(content: string): Resource[] {
       let config_snippet: string | undefined;
 
       // Check if it's a Docker-based MCP (collabnix focuses on containerized)
-      const isDocker = parsed.url.includes("docker") ||
-                       parsed.description.toLowerCase().includes("docker") ||
-                       parsed.description.toLowerCase().includes("container");
+      const isDocker =
+        parsed.url.includes('docker') ||
+        parsed.description.toLowerCase().includes('docker') ||
+        parsed.description.toLowerCase().includes('container');
 
       if (isDocker) {
         install_command = `# See ${parsed.url} for Docker installation`;
-        const packageName = parsed.name.toLowerCase().replace(/\s+/g, "-");
+        const packageName = parsed.name.toLowerCase().replace(/\s+/g, '-');
         config_snippet = JSON.stringify(
           {
             mcpServers: {
               [packageName]: {
-                command: "docker",
-                args: ["run", "-i", "See repository"],
+                command: 'docker',
+                args: ['run', '-i', 'See repository'],
               },
             },
           },
@@ -61,12 +65,12 @@ function parseMarkdown(content: string): Resource[] {
         );
       } else {
         install_command = `# See ${parsed.url} for installation instructions`;
-        const packageName = parsed.name.toLowerCase().replace(/\s+/g, "-");
+        const packageName = parsed.name.toLowerCase().replace(/\s+/g, '-');
         config_snippet = JSON.stringify(
           {
             mcpServers: {
               [packageName]: {
-                command: "See repository",
+                command: 'See repository',
                 args: [],
               },
             },
@@ -78,13 +82,13 @@ function parseMarkdown(content: string): Resource[] {
 
       resources.push({
         name: parsed.name,
-        description: parsed.description || "No description",
-        type: "mcp",
+        description: parsed.description || 'No description',
+        type: 'mcp',
         install_command,
         config_snippet,
-        source: "collabnix/awesome-mcp-lists",
+        source: 'collabnix/awesome-mcp-lists',
         url: parsed.url,
-        keywords: isDocker ? ["docker", "container"] : undefined,
+        keywords: isDocker ? ['docker', 'container'] : undefined,
       });
     }
   }
@@ -114,7 +118,7 @@ export async function fetchCollabnixAwesomeMcp(): Promise<Resource[]> {
     cache.set(CACHE_KEY, resources, TTL.AWESOME_LISTS);
     return resources;
   } catch (error) {
-    console.error("Error fetching collabnix/awesome-mcp-lists:", error);
+    console.error('Error fetching collabnix/awesome-mcp-lists:', error);
     return [];
   }
 }
@@ -125,10 +129,10 @@ export async function fetchCollabnixAwesomeMcp(): Promise<Resource[]> {
 export function getCollabnixAwesomeMcpSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "collabnix/awesome-mcp-lists",
-    type: "mcp",
+    name: 'collabnix/awesome-mcp-lists',
+    type: 'mcp',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

@@ -1,20 +1,17 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 
-import { search, browse, getSources } from "./sources/aggregator.js";
-import type { SearchInput, BrowseInput } from "./types.js";
-import { formatSearchResults, formatBrowseResults, formatSources } from "./formatter.js";
+import { search, browse, getSources } from './sources/aggregator.js';
+import type { SearchInput, BrowseInput } from './types.js';
+import { formatSearchResults, formatBrowseResults, formatSources } from './formatter.js';
 
 const server = new Server(
   {
-    name: "claude-oracle-mcp",
-    version: "0.1.0",
+    name: 'claude-oracle-mcp',
+    version: '0.1.0',
   },
   {
     capabilities: {
@@ -28,66 +25,65 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
     tools: [
       {
-        name: "search",
+        name: 'search',
         description:
-          "Search for Claude Code skills, plugins, and MCP servers. Returns install commands.",
+          'Search for Claude Code skills, plugins, and MCP servers. Returns install commands.',
         inputSchema: {
-          type: "object" as const,
+          type: 'object' as const,
           properties: {
             query: {
-              type: "string",
-              description: "Search term or description",
+              type: 'string',
+              description: 'Search term or description',
             },
             type: {
-              type: "string",
-              enum: ["skill", "plugin", "mcp", "all"],
-              description: "Filter by resource type (default: all)",
+              type: 'string',
+              enum: ['skill', 'plugin', 'mcp', 'all'],
+              description: 'Filter by resource type (default: all)',
             },
             semantic: {
-              type: "boolean",
-              description: "Use AI semantic search (requires SKILLSMP_API_KEY)",
+              type: 'boolean',
+              description: 'Use AI semantic search (requires SKILLSMP_API_KEY)',
             },
             limit: {
-              type: "number",
-              description: "Max results (default: 5, max: 20)",
+              type: 'number',
+              description: 'Max results (default: 5, max: 20)',
             },
           },
-          required: ["query"],
+          required: ['query'],
         },
       },
       {
-        name: "browse",
-        description:
-          "Browse skills, plugins, and MCP servers by category or popularity.",
+        name: 'browse',
+        description: 'Browse skills, plugins, and MCP servers by category or popularity.',
         inputSchema: {
-          type: "object" as const,
+          type: 'object' as const,
           properties: {
             category: {
-              type: "string",
-              description: "Category filter (e.g., testing, database, security)",
+              type: 'string',
+              description: 'Category filter (e.g., testing, database, security)',
             },
             type: {
-              type: "string",
-              enum: ["skill", "plugin", "mcp", "all"],
-              description: "Filter by resource type (default: all)",
+              type: 'string',
+              enum: ['skill', 'plugin', 'mcp', 'all'],
+              description: 'Filter by resource type (default: all)',
             },
             sort: {
-              type: "string",
-              enum: ["popular", "recent"],
-              description: "Sort order (default: popular)",
+              type: 'string',
+              enum: ['popular', 'recent'],
+              description: 'Sort order (default: popular)',
             },
             limit: {
-              type: "number",
-              description: "Max results (default: 10)",
+              type: 'number',
+              description: 'Max results (default: 10)',
             },
           },
         },
       },
       {
-        name: "sources",
-        description: "Show available data sources and their status.",
+        name: 'sources',
+        description: 'Show available data sources and their status.',
         inputSchema: {
-          type: "object" as const,
+          type: 'object' as const,
           properties: {},
         },
       },
@@ -101,14 +97,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   try {
     switch (name) {
-      case "search": {
+      case 'search': {
         const input = (args ?? {}) as unknown as SearchInput;
         if (!input.query) {
           return {
             content: [
               {
-                type: "text" as const,
-                text: "Error: query parameter is required",
+                type: 'text' as const,
+                text: 'Error: query parameter is required',
               },
             ],
           };
@@ -116,7 +112,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
         const result = await search({
           query: input.query,
-          type: input.type || "all",
+          type: input.type || 'all',
           semantic: input.semantic || false,
           limit: Math.min(input.limit || 5, 20),
         });
@@ -124,39 +120,39 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return {
           content: [
             {
-              type: "text" as const,
+              type: 'text' as const,
               text: formatSearchResults(result),
             },
           ],
         };
       }
 
-      case "browse": {
+      case 'browse': {
         const input = (args ?? {}) as unknown as BrowseInput;
         const result = await browse({
           category: input.category,
-          type: input.type || "all",
-          sort: input.sort || "popular",
+          type: input.type || 'all',
+          sort: input.sort || 'popular',
           limit: Math.min(input.limit || 10, 20),
         });
 
         return {
           content: [
             {
-              type: "text" as const,
+              type: 'text' as const,
               text: formatBrowseResults(result, input.category),
             },
           ],
         };
       }
 
-      case "sources": {
+      case 'sources': {
         const { sources, total } = getSources();
 
         return {
           content: [
             {
-              type: "text" as const,
+              type: 'text' as const,
               text: formatSources(sources, total),
             },
           ],
@@ -167,18 +163,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         return {
           content: [
             {
-              type: "text" as const,
+              type: 'text' as const,
               text: `Unknown tool: ${name}`,
             },
           ],
         };
     }
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return {
       content: [
         {
-          type: "text" as const,
+          type: 'text' as const,
           text: `Error: ${message}`,
         },
       ],
@@ -190,10 +186,10 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("claude-oracle MCP server running on stdio");
+  console.error('claude-oracle MCP server running on stdio');
 }
 
 main().catch((error) => {
-  console.error("Server error:", error);
+  console.error('Server error:', error);
   process.exit(1);
 });

@@ -1,8 +1,8 @@
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const MCP_REGISTRY_URL = "https://registry.modelcontextprotocol.io/v0.1/servers";
-const CACHE_KEY = "mcp-registry:servers";
+const MCP_REGISTRY_URL = 'https://registry.modelcontextprotocol.io/v0.1/servers';
+const CACHE_KEY = 'mcp-registry:servers';
 
 interface McpServer {
   name: string;
@@ -33,8 +33,8 @@ interface McpRegistryResponse {
  */
 function parseServer(server: McpServer): Resource {
   // Determine install command based on available packages
-  let installCommand = "";
-  let configSnippet = "";
+  let installCommand = '';
+  let configSnippet = '';
 
   if (server.packages?.npm) {
     installCommand = `npx -y ${server.packages.npm}`;
@@ -42,8 +42,8 @@ function parseServer(server: McpServer): Resource {
       {
         mcpServers: {
           [server.name.toLowerCase()]: {
-            command: "npx",
-            args: ["-y", server.packages.npm],
+            command: 'npx',
+            args: ['-y', server.packages.npm],
           },
         },
       },
@@ -56,8 +56,8 @@ function parseServer(server: McpServer): Resource {
       {
         mcpServers: {
           [server.name.toLowerCase()]: {
-            command: "python",
-            args: ["-m", server.packages.pypi],
+            command: 'python',
+            args: ['-m', server.packages.pypi],
           },
         },
       },
@@ -70,8 +70,8 @@ function parseServer(server: McpServer): Resource {
       {
         mcpServers: {
           [server.name.toLowerCase()]: {
-            command: "docker",
-            args: ["run", "-i", server.remotes.docker],
+            command: 'docker',
+            args: ['run', '-i', server.remotes.docker],
           },
         },
       },
@@ -82,12 +82,15 @@ function parseServer(server: McpServer): Resource {
 
   return {
     name: server.name,
-    description: server.description || "No description",
-    type: "mcp",
+    description: server.description || 'No description',
+    type: 'mcp',
     install_command: installCommand,
     config_snippet: configSnippet,
-    source: "modelcontextprotocol.io",
-    url: server.websiteUrl || server.repository?.url || `https://registry.modelcontextprotocol.io/servers/${server.name}`,
+    source: 'modelcontextprotocol.io',
+    url:
+      server.websiteUrl ||
+      server.repository?.url ||
+      `https://registry.modelcontextprotocol.io/servers/${server.name}`,
     version: server.version,
   };
 }
@@ -115,7 +118,7 @@ export async function fetchMcpRegistry(): Promise<Resource[]> {
         break;
       }
 
-      const data = await response.json() as McpRegistryResponse;
+      const data = (await response.json()) as McpRegistryResponse;
 
       if (!data.servers || data.servers.length === 0) {
         break;
@@ -133,7 +136,7 @@ export async function fetchMcpRegistry(): Promise<Resource[]> {
     cache.set(CACHE_KEY, allServers, TTL.MCP_REGISTRY);
     return allServers;
   } catch (error) {
-    console.error("Error fetching MCP Registry:", error);
+    console.error('Error fetching MCP Registry:', error);
     return [];
   }
 }
@@ -144,10 +147,10 @@ export async function fetchMcpRegistry(): Promise<Resource[]> {
 export function getMcpRegistrySource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "modelcontextprotocol.io",
-    type: "mcp",
+    name: 'modelcontextprotocol.io',
+    type: 'mcp',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

@@ -1,7 +1,7 @@
 /**
  * Resource types supported by claude-oracle
  */
-export type ResourceType = "skill" | "plugin" | "mcp";
+export type ResourceType = 'skill' | 'plugin' | 'mcp';
 
 /**
  * Unified resource schema for skills, plugins, and MCP servers
@@ -35,7 +35,7 @@ export interface Resource {
 /**
  * Source status for health checks
  */
-export type SourceStatus = "ok" | "stale" | "error" | "no_key";
+export type SourceStatus = 'ok' | 'stale' | 'error' | 'no_key';
 
 /**
  * Data source metadata
@@ -62,7 +62,7 @@ export interface CacheEntry<T> {
  */
 export interface SearchInput {
   query: string;
-  type?: ResourceType | "all";
+  type?: ResourceType | 'all';
   semantic?: boolean;
   limit?: number;
 }
@@ -82,8 +82,8 @@ export interface SearchOutput {
  */
 export interface BrowseInput {
   category?: string;
-  type?: ResourceType | "all";
-  sort?: "popular" | "recent";
+  type?: ResourceType | 'all';
+  sort?: 'popular' | 'recent';
   limit?: number;
 }
 

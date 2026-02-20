@@ -1,24 +1,26 @@
-import type { Resource, ResourceType, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, ResourceType, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const JMAN_URL = "https://raw.githubusercontent.com/jmanhype/awesome-claude-code/main/README.md";
-const CACHE_KEY = "awesome-claude-jman";
+const JMAN_URL = 'https://raw.githubusercontent.com/jmanhype/awesome-claude-code/main/README.md';
+const CACHE_KEY = 'awesome-claude-jman';
 
 /**
  * Infer type from URL
  */
 function inferType(url: string): ResourceType {
-  if (url.includes("/skills/") || url.includes("skill")) return "skill";
-  if (url.includes("/plugins/") || url.includes("plugin")) return "plugin";
-  if (url.includes("mcp") || url.includes("model-context-protocol")) return "mcp";
-  return "plugin"; // default for claude-code resources
+  if (url.includes('/skills/') || url.includes('skill')) return 'skill';
+  if (url.includes('/plugins/') || url.includes('plugin')) return 'plugin';
+  if (url.includes('mcp') || url.includes('model-context-protocol')) return 'mcp';
+  return 'plugin'; // default for claude-code resources
 }
 
 /**
  * Parse markdown list item
  * Handles formats like: - [Name](url) - description
  */
-function parseMarkdownListItem(line: string): { name: string; url: string; description: string } | null {
+function parseMarkdownListItem(
+  line: string
+): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
@@ -36,7 +38,7 @@ function parseMarkdownListItem(line: string): { name: string; url: string; descr
  */
 function parseMarkdown(content: string): Resource[] {
   const resources: Resource[] = [];
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const seen = new Set<string>();
 
   for (const line of lines) {
@@ -51,7 +53,7 @@ function parseMarkdown(content: string): Resource[] {
       let install_command: string;
       let config_snippet: string | undefined;
 
-      if (type === "skill") {
+      if (type === 'skill') {
         const repoMatch = parsed.url.match(/github\.com\/([^/]+\/[^/]+)/);
         const skillMatch = parsed.url.match(/\/skills\/([^/]+)/);
 
@@ -62,18 +64,18 @@ function parseMarkdown(content: string): Resource[] {
         } else {
           install_command = `See: ${parsed.url}`;
         }
-      } else if (type === "plugin") {
+      } else if (type === 'plugin') {
         install_command = `/plugin install ${parsed.name}`;
       } else {
         // MCP server
         install_command = `# See ${parsed.url} for installation instructions`;
 
-        const packageName = parsed.name.toLowerCase().replace(/\s+/g, "-");
+        const packageName = parsed.name.toLowerCase().replace(/\s+/g, '-');
         config_snippet = JSON.stringify(
           {
             mcpServers: {
               [packageName]: {
-                command: "See repository",
+                command: 'See repository',
                 args: [],
               },
             },
@@ -85,11 +87,11 @@ function parseMarkdown(content: string): Resource[] {
 
       resources.push({
         name: parsed.name,
-        description: parsed.description || "No description",
+        description: parsed.description || 'No description',
         type,
         install_command,
         config_snippet,
-        source: "jmanhype/awesome-claude-code",
+        source: 'jmanhype/awesome-claude-code',
         url: parsed.url,
       });
     }
@@ -120,7 +122,7 @@ export async function fetchJmanAwesomeClaude(): Promise<Resource[]> {
     cache.set(CACHE_KEY, resources, TTL.AWESOME_LISTS);
     return resources;
   } catch (error) {
-    console.error("Error fetching jmanhype/awesome-claude-code:", error);
+    console.error('Error fetching jmanhype/awesome-claude-code:', error);
     return [];
   }
 }
@@ -131,10 +133,10 @@ export async function fetchJmanAwesomeClaude(): Promise<Resource[]> {
 export function getJmanAwesomeClaudeSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "jmanhype/awesome-claude-code",
-    type: "plugin",
+    name: 'jmanhype/awesome-claude-code',
+    type: 'plugin',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

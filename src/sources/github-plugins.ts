@@ -1,21 +1,21 @@
-import type { Resource, MarketplaceJson, MarketplacePlugin } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, MarketplaceJson, MarketplacePlugin } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
 /**
  * GitHub marketplace sources
  */
 const MARKETPLACE_URLS = [
   {
-    url: "https://raw.githubusercontent.com/jeremylongshore/claude-code-plugins-plus/main/.claude-plugin/marketplace.json",
-    marketplace: "claude-code-plugins-plus",
+    url: 'https://raw.githubusercontent.com/jeremylongshore/claude-code-plugins-plus/main/.claude-plugin/marketplace.json',
+    marketplace: 'claude-code-plugins-plus',
   },
   {
-    url: "https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/.claude-plugin/marketplace.json",
-    marketplace: "claude-plugins-official",
+    url: 'https://raw.githubusercontent.com/anthropics/claude-plugins-official/main/.claude-plugin/marketplace.json',
+    marketplace: 'claude-plugins-official',
   },
   {
-    url: "https://raw.githubusercontent.com/obra/superpowers-marketplace/main/.claude-plugin/marketplace.json",
-    marketplace: "superpowers-marketplace",
+    url: 'https://raw.githubusercontent.com/obra/superpowers-marketplace/main/.claude-plugin/marketplace.json',
+    marketplace: 'superpowers-marketplace',
   },
 ];
 
@@ -23,13 +23,13 @@ const MARKETPLACE_URLS = [
  * Parse a marketplace plugin entry to unified Resource format
  */
 function parsePlugin(plugin: MarketplacePlugin, marketplace: string): Resource {
-  const source = typeof plugin.source === "object" ? plugin.source.url : plugin.source;
-  const url = plugin.repository || (source?.startsWith("http") ? source : undefined);
+  const source = typeof plugin.source === 'object' ? plugin.source.url : plugin.source;
+  const url = plugin.repository || (source?.startsWith('http') ? source : undefined);
 
   return {
     name: plugin.name,
-    description: plugin.description || "No description available",
-    type: "plugin",
+    description: plugin.description || 'No description available',
+    type: 'plugin',
     install_command: `/plugin install ${plugin.name}@${marketplace}`,
     source: marketplace,
     url,
@@ -42,10 +42,7 @@ function parsePlugin(plugin: MarketplacePlugin, marketplace: string): Resource {
 /**
  * Fetch plugins from a single marketplace
  */
-async function fetchMarketplace(
-  url: string,
-  marketplace: string
-): Promise<Resource[]> {
+async function fetchMarketplace(url: string, marketplace: string): Promise<Resource[]> {
   const cacheKey = `github:${marketplace}`;
   const cached = cache.get<Resource[]>(cacheKey);
   if (cached) return cached;
@@ -75,9 +72,7 @@ async function fetchMarketplace(
  */
 export async function fetchGithubPlugins(): Promise<Resource[]> {
   const results = await Promise.all(
-    MARKETPLACE_URLS.map(({ url, marketplace }) =>
-      fetchMarketplace(url, marketplace)
-    )
+    MARKETPLACE_URLS.map(({ url, marketplace }) => fetchMarketplace(url, marketplace))
   );
 
   return results.flat();
@@ -91,10 +86,10 @@ export function getGithubPluginsSources() {
     const cached = cache.get<Resource[]>(`github:${marketplace}`);
     return {
       name: marketplace,
-      type: "plugin" as const,
+      type: 'plugin' as const,
       count: cached?.length || 0,
-      last_updated: cached ? new Date().toISOString() : "never",
-      status: cached ? ("ok" as const) : ("stale" as const),
+      last_updated: cached ? new Date().toISOString() : 'never',
+      status: cached ? ('ok' as const) : ('stale' as const),
     };
   });
 }

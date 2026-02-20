@@ -1,9 +1,9 @@
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const NPM_SEARCH_URL = "https://registry.npmjs.org/-/v1/search";
-const CACHE_KEY_MCP = "npm-registry:mcp-servers";
-const CACHE_KEY_PLUGINS = "npm-registry:claude-plugins";
+const NPM_SEARCH_URL = 'https://registry.npmjs.org/-/v1/search';
+const CACHE_KEY_MCP = 'npm-registry:mcp-servers';
+const CACHE_KEY_PLUGINS = 'npm-registry:claude-plugins';
 
 interface NpmPackage {
   package: {
@@ -38,21 +38,23 @@ interface NpmSearchResponse {
 /**
  * Parse npm package to unified Resource format
  */
-function parsePackage(pkg: NpmPackage, type: "mcp" | "plugin"): Resource {
+function parsePackage(pkg: NpmPackage, type: 'mcp' | 'plugin'): Resource {
   const name = pkg.package.name;
-  const isScoped = name.startsWith("@");
 
-  let installCommand = "";
-  let configSnippet = "";
+  let installCommand = '';
+  let configSnippet = '';
 
-  if (type === "mcp") {
+  if (type === 'mcp') {
     installCommand = `npx -y ${name}`;
     configSnippet = JSON.stringify(
       {
         mcpServers: {
-          [name.replace(/^@[^/]+\//, "").replace(/^mcp-/, "").replace(/^server-/, "")]: {
-            command: "npx",
-            args: ["-y", name],
+          [name
+            .replace(/^@[^/]+\//, '')
+            .replace(/^mcp-/, '')
+            .replace(/^server-/, '')]: {
+            command: 'npx',
+            args: ['-y', name],
           },
         },
       },
@@ -66,12 +68,16 @@ function parsePackage(pkg: NpmPackage, type: "mcp" | "plugin"): Resource {
 
   return {
     name,
-    description: pkg.package.description || "No description",
+    description: pkg.package.description || 'No description',
     type,
     install_command: installCommand,
     config_snippet: configSnippet,
-    source: "npmjs.com",
-    url: pkg.package.links.homepage || pkg.package.links.repository || pkg.package.links.npm || `https://www.npmjs.com/package/${name}`,
+    source: 'npmjs.com',
+    url:
+      pkg.package.links.homepage ||
+      pkg.package.links.repository ||
+      pkg.package.links.npm ||
+      `https://www.npmjs.com/package/${name}`,
     version: pkg.package.version,
     keywords: pkg.package.keywords,
     quality_score: pkg.score.detail.quality,
@@ -82,7 +88,7 @@ function parsePackage(pkg: NpmPackage, type: "mcp" | "plugin"): Resource {
 /**
  * Fetch packages from npm registry with pagination
  */
-async function fetchNpmPackages(keyword: string, type: "mcp" | "plugin"): Promise<Resource[]> {
+async function fetchNpmPackages(keyword: string, type: 'mcp' | 'plugin'): Promise<Resource[]> {
   const allPackages: Resource[] = [];
   let from = 0;
   const size = 250;
@@ -100,13 +106,13 @@ async function fetchNpmPackages(keyword: string, type: "mcp" | "plugin"): Promis
         break;
       }
 
-      const data = await response.json() as NpmSearchResponse;
+      const data = (await response.json()) as NpmSearchResponse;
 
       if (!data.objects || data.objects.length === 0) {
         break;
       }
 
-      allPackages.push(...data.objects.map(pkg => parsePackage(pkg, type)));
+      allPackages.push(...data.objects.map((pkg) => parsePackage(pkg, type)));
 
       from += size;
       hasMore = data.objects.length === size && from < data.total;
@@ -130,7 +136,7 @@ export async function fetchNpmMcpPackages(): Promise<Resource[]> {
   const cached = cache.get<Resource[]>(CACHE_KEY_MCP);
   if (cached) return cached;
 
-  const packages = await fetchNpmPackages("mcp-server", "mcp");
+  const packages = await fetchNpmPackages('mcp-server', 'mcp');
   cache.set(CACHE_KEY_MCP, packages, TTL.NPM_REGISTRY);
   return packages;
 }
@@ -142,7 +148,7 @@ export async function fetchNpmPluginPackages(): Promise<Resource[]> {
   const cached = cache.get<Resource[]>(CACHE_KEY_PLUGINS);
   if (cached) return cached;
 
-  const packages = await fetchNpmPackages("claude-code-plugin", "plugin");
+  const packages = await fetchNpmPackages('claude-code-plugin', 'plugin');
   cache.set(CACHE_KEY_PLUGINS, packages, TTL.NPM_REGISTRY);
   return packages;
 }
@@ -153,11 +159,11 @@ export async function fetchNpmPluginPackages(): Promise<Resource[]> {
 export function getNpmMcpSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY_MCP);
   return {
-    name: "npmjs.com (mcp)",
-    type: "mcp",
+    name: 'npmjs.com (mcp)',
+    type: 'mcp',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }
 
@@ -167,10 +173,10 @@ export function getNpmMcpSource(): DataSource {
 export function getNpmPluginSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY_PLUGINS);
   return {
-    name: "npmjs.com (plugins)",
-    type: "plugin",
+    name: 'npmjs.com (plugins)',
+    type: 'plugin',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

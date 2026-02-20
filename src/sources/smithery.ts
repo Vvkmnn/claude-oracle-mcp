@@ -1,8 +1,8 @@
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const SMITHERY_API_URL = "https://registry.smithery.ai/servers";
-const CACHE_KEY = "smithery:servers";
+const SMITHERY_API_URL = 'https://registry.smithery.ai/servers';
+const CACHE_KEY = 'smithery:servers';
 
 interface SmitheryServer {
   qualifiedName: string;
@@ -26,26 +26,26 @@ interface SmitheryResponse {
  */
 function parseServer(server: SmitheryServer): Resource {
   // Extract package name from qualified name (e.g., "@modelcontextprotocol/server-filesystem" -> server-filesystem)
-  const name = server.qualifiedName.split("/").pop() || server.displayName;
+  const name = server.qualifiedName.split('/').pop() || server.displayName;
 
   return {
     name: server.displayName || name,
-    description: server.description || "No description",
-    type: "mcp",
+    description: server.description || 'No description',
+    type: 'mcp',
     install_command: `npx -y ${server.qualifiedName}`,
     config_snippet: JSON.stringify(
       {
         mcpServers: {
-          [name.toLowerCase().replace(/^server-/, "")]: {
-            command: "npx",
-            args: ["-y", server.qualifiedName],
+          [name.toLowerCase().replace(/^server-/, '')]: {
+            command: 'npx',
+            args: ['-y', server.qualifiedName],
           },
         },
       },
       null,
       2
     ),
-    source: "smithery.ai",
+    source: 'smithery.ai',
     url: server.homepage || `https://smithery.ai/server/${server.qualifiedName}`,
     verified: server.verified,
     last_updated: server.createdAt,
@@ -75,7 +75,7 @@ export async function fetchSmitheryServers(): Promise<Resource[]> {
         break;
       }
 
-      const data = await response.json() as SmitheryResponse;
+      const data = (await response.json()) as SmitheryResponse;
 
       if (!data.servers || data.servers.length === 0) {
         break;
@@ -95,7 +95,7 @@ export async function fetchSmitheryServers(): Promise<Resource[]> {
     cache.set(CACHE_KEY, allServers, TTL.SMITHERY);
     return allServers;
   } catch (error) {
-    console.error("Error fetching Smithery Registry:", error);
+    console.error('Error fetching Smithery Registry:', error);
     return [];
   }
 }
@@ -106,10 +106,10 @@ export async function fetchSmitheryServers(): Promise<Resource[]> {
 export function getSmitherySource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "smithery.ai",
-    type: "mcp",
+    name: 'smithery.ai',
+    type: 'mcp',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

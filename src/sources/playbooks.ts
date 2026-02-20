@@ -1,13 +1,13 @@
-import { XMLParser } from "fast-xml-parser";
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import { XMLParser } from 'fast-xml-parser';
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
 const PLAYBOOKS_SITEMAPS = [
-  "https://playbooks.com/mcp/sitemap/0.xml",
-  "https://playbooks.com/mcp/sitemap/1.xml",
-  "https://playbooks.com/mcp/sitemap/2.xml",
+  'https://playbooks.com/mcp/sitemap/0.xml',
+  'https://playbooks.com/mcp/sitemap/1.xml',
+  'https://playbooks.com/mcp/sitemap/2.xml',
 ];
-const CACHE_KEY = "playbooks:mcp-servers";
+const CACHE_KEY = 'playbooks:mcp-servers';
 
 interface SitemapUrl {
   loc: string;
@@ -43,22 +43,22 @@ function parseUrl(item: SitemapUrl): Resource | null {
 
   const { owner, name } = parsed;
   const displayName = name
-    .replace(/-/g, " ")
-    .replace(/mcp/gi, "MCP")
-    .split(" ")
+    .replace(/-/g, ' ')
+    .replace(/mcp/gi, 'MCP')
+    .split(' ')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+    .join(' ');
 
   return {
     name: displayName,
     description: `${displayName} MCP server by ${owner}`,
-    type: "mcp",
+    type: 'mcp',
     install_command: `# Visit playbooks.com for install instructions`,
     config_snippet: JSON.stringify(
       {
         mcpServers: {
           [name]: {
-            command: "See installation docs",
+            command: 'See installation docs',
             args: [],
           },
         },
@@ -66,7 +66,7 @@ function parseUrl(item: SitemapUrl): Resource | null {
       null,
       2
     ),
-    source: "playbooks.com",
+    source: 'playbooks.com',
     url: item.loc,
     last_updated: item.lastmod,
   };
@@ -88,7 +88,7 @@ async function fetchSitemap(url: string): Promise<Resource[]> {
     const xml = await response.text();
     const parser = new XMLParser({
       ignoreAttributes: false,
-      attributeNamePrefix: "@_",
+      attributeNamePrefix: '@_',
     });
 
     const data = parser.parse(xml) as SitemapUrlset;
@@ -97,9 +97,7 @@ async function fetchSitemap(url: string): Promise<Resource[]> {
     if (!urls) return [];
 
     const urlArray = Array.isArray(urls) ? urls : [urls];
-    const resources = urlArray
-      .map(parseUrl)
-      .filter((r): r is Resource => r !== null);
+    const resources = urlArray.map(parseUrl).filter((r): r is Resource => r !== null);
 
     return resources;
   } catch (error) {
@@ -116,15 +114,13 @@ export async function fetchPlaybooksServers(): Promise<Resource[]> {
   if (cached) return cached;
 
   try {
-    const results = await Promise.all(
-      PLAYBOOKS_SITEMAPS.map(fetchSitemap)
-    );
+    const results = await Promise.all(PLAYBOOKS_SITEMAPS.map(fetchSitemap));
 
     const allServers = results.flat();
     cache.set(CACHE_KEY, allServers, TTL.PLAYBOOKS);
     return allServers;
   } catch (error) {
-    console.error("Error fetching Playbooks servers:", error);
+    console.error('Error fetching Playbooks servers:', error);
     return [];
   }
 }
@@ -135,10 +131,10 @@ export async function fetchPlaybooksServers(): Promise<Resource[]> {
 export function getPlaybooksSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "playbooks.com",
-    type: "mcp",
+    name: 'playbooks.com',
+    type: 'mcp',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

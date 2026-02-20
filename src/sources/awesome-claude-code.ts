@@ -1,14 +1,17 @@
-import type { Resource, DataSource } from "../types.js";
-import { cache, TTL } from "../cache.js";
+import type { Resource, DataSource } from '../types.js';
+import { cache, TTL } from '../cache.js';
 
-const AWESOME_CC_URL = "https://raw.githubusercontent.com/hesreallyhim/awesome-claude-code/main/README.md";
-const CACHE_KEY = "awesome:claude-code";
+const AWESOME_CC_URL =
+  'https://raw.githubusercontent.com/hesreallyhim/awesome-claude-code/main/README.md';
+const CACHE_KEY = 'awesome:claude-code';
 
 /**
  * Parse markdown table row to extract name, description, and URL
  * Handles formats like: | [Name](url) | description |
  */
-function parseMarkdownRow(row: string): { name: string; url: string; description: string; type?: string } | null {
+function parseMarkdownRow(
+  row: string
+): { name: string; url: string; description: string; type?: string } | null {
   // Match: | [Name](url) | description | type |
   const linkMatch = row.match(/\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|([^|]*)\|?([^|]*)?/);
   if (linkMatch) {
@@ -27,7 +30,9 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
  * Parse markdown list item
  * Handles formats like: - [Name](url) - description
  */
-function parseMarkdownListItem(line: string): { name: string; url: string; description: string } | null {
+function parseMarkdownListItem(
+  line: string
+): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
@@ -43,17 +48,21 @@ function parseMarkdownListItem(line: string): { name: string; url: string; descr
 /**
  * Determine resource type from URL or context
  */
-function inferType(url: string, name: string): "skill" | "plugin" | "mcp" {
+function inferType(url: string, name: string): 'skill' | 'plugin' | 'mcp' {
   const urlLower = url.toLowerCase();
   const nameLower = name.toLowerCase();
 
-  if (urlLower.includes("/skills/") || nameLower.includes("skill")) {
-    return "skill";
+  if (urlLower.includes('/skills/') || nameLower.includes('skill')) {
+    return 'skill';
   }
-  if (urlLower.includes("/plugins/") || urlLower.includes(".claude-plugin") || nameLower.includes("plugin")) {
-    return "plugin";
+  if (
+    urlLower.includes('/plugins/') ||
+    urlLower.includes('.claude-plugin') ||
+    nameLower.includes('plugin')
+  ) {
+    return 'plugin';
   }
-  return "skill"; // Default for awesome-claude-code
+  return 'skill'; // Default for awesome-claude-code
 }
 
 /**
@@ -61,7 +70,7 @@ function inferType(url: string, name: string): "skill" | "plugin" | "mcp" {
  */
 function parseMarkdown(content: string): Resource[] {
   const resources: Resource[] = [];
-  const lines = content.split("\n");
+  const lines = content.split('\n');
   const seen = new Set<string>();
 
   for (const line of lines) {
@@ -80,16 +89,20 @@ function parseMarkdown(content: string): Resource[] {
       seen.add(parsed.name.toLowerCase());
 
       // Infer type if not explicitly provided
-      const type = parsed.type === "plugin" ? "plugin" :
-                   parsed.type === "skill" ? "skill" :
-                   parsed.type === "mcp" ? "mcp" :
-                   inferType(parsed.url, parsed.name);
+      const type =
+        parsed.type === 'plugin'
+          ? 'plugin'
+          : parsed.type === 'skill'
+            ? 'skill'
+            : parsed.type === 'mcp'
+              ? 'mcp'
+              : inferType(parsed.url, parsed.name);
 
       // Generate install command based on type
       let install_command: string;
       let config_snippet: string | undefined;
 
-      if (type === "skill") {
+      if (type === 'skill') {
         // Extract repo from GitHub URL
         const repoMatch = parsed.url.match(/github\.com\/([^/]+\/[^/]+)/);
         const skillMatch = parsed.url.match(/\/skills\/([^/]+)/);
@@ -99,7 +112,7 @@ function parseMarkdown(content: string): Resource[] {
         } else {
           install_command = `See: ${parsed.url}`;
         }
-      } else if (type === "plugin") {
+      } else if (type === 'plugin') {
         const repoMatch = parsed.url.match(/github\.com\/([^/]+\/[^/]+)/);
         if (repoMatch) {
           install_command = `/plugin install ${parsed.name}@github`;
@@ -114,9 +127,9 @@ function parseMarkdown(content: string): Resource[] {
         config_snippet = JSON.stringify(
           {
             mcpServers: {
-              [parsed.name.toLowerCase().replace(/\s+/g, "-")]: {
-                command: "npx",
-                args: ["-y", repo],
+              [parsed.name.toLowerCase().replace(/\s+/g, '-')]: {
+                command: 'npx',
+                args: ['-y', repo],
               },
             },
           },
@@ -127,11 +140,11 @@ function parseMarkdown(content: string): Resource[] {
 
       resources.push({
         name: parsed.name,
-        description: parsed.description || "No description",
+        description: parsed.description || 'No description',
         type,
         install_command,
         config_snippet,
-        source: "awesome-claude-code",
+        source: 'awesome-claude-code',
         url: parsed.url,
       });
     }
@@ -162,7 +175,7 @@ export async function fetchAwesomeClaudeCode(): Promise<Resource[]> {
     cache.set(CACHE_KEY, resources, TTL.AWESOME_LISTS);
     return resources;
   } catch (error) {
-    console.error("Error fetching awesome-claude-code:", error);
+    console.error('Error fetching awesome-claude-code:', error);
     return [];
   }
 }
@@ -173,10 +186,10 @@ export async function fetchAwesomeClaudeCode(): Promise<Resource[]> {
 export function getAwesomeClaudeCodeSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
-    name: "awesome-claude-code",
-    type: "skill",
+    name: 'awesome-claude-code',
+    type: 'skill',
     count: cached?.length || 0,
-    last_updated: cached ? new Date().toISOString() : "never",
-    status: cached ? "ok" : "stale",
+    last_updated: cached ? new Date().toISOString() : 'never',
+    status: cached ? 'ok' : 'stale',
   };
 }

@@ -1,4 +1,4 @@
-import type { CacheEntry } from "./types.js";
+import type { CacheEntry } from './types.js';
 
 /**
  * Simple in-memory cache with TTL support
@@ -63,12 +63,12 @@ export const cache = new Cache();
 
 // TTL constants
 export const TTL = {
-  PLUGINS: 24 * 60 * 60 * 1000,     // 24 hours
-  MCP_SERVERS: 6 * 60 * 60 * 1000,  // 6 hours
+  PLUGINS: 24 * 60 * 60 * 1000, // 24 hours
+  MCP_SERVERS: 6 * 60 * 60 * 1000, // 6 hours
   AWESOME_LISTS: 12 * 60 * 60 * 1000, // 12 hours
-  SKILLSMP: 60 * 60 * 1000,         // 1 hour
-  SMITHERY: 6 * 60 * 60 * 1000,     // 6 hours
+  SKILLSMP: 60 * 60 * 1000, // 1 hour
+  SMITHERY: 6 * 60 * 60 * 1000, // 6 hours
   MCP_REGISTRY: 6 * 60 * 60 * 1000, // 6 hours
   NPM_REGISTRY: 12 * 60 * 60 * 1000, // 12 hours
-  PLAYBOOKS: 12 * 60 * 60 * 1000,   // 12 hours
+  PLAYBOOKS: 12 * 60 * 60 * 1000, // 12 hours
 } as const;
