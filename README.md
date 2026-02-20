@@ -15,13 +15,13 @@ Requirements:
 **From shell:**
 
 ```bash
-claude mcp add claude-oracle-mcp -- bunx claude-oracle-mcp
+claude mcp add claude-oracle-mcp -- npx claude-oracle-mcp
 ```
 
 **From inside Claude** (restart required):
 
 ```
-Add this to our global mcp config: bunx claude-oracle-mcp
+Add this to our global mcp config: npx claude-oracle-mcp
 
 Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
 ```
@@ -32,7 +32,7 @@ Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
 {
   "mcpServers": {
     "claude-oracle-mcp": {
-      "command": "bunx",
+      "command": "npx",
       "args": ["claude-oracle-mcp"],
       "env": {
         "SKILLSMP_API_KEY": "optional-for-semantic-search"
@@ -44,7 +44,7 @@ Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
 
 That's it; there is **no `npm install` required** as there are no external dependencies or local databases, only search algorithms.
 
-However, in the unlikely event that you pull the wrong package / `bunx` registry is out of date, you can force resolution issues in certain environments with:
+However, in the unlikely event that you pull the wrong package / `npx` registry is out of date, you can force resolution issues in certain environments with:
 
 ```bash
 npm install -g claude-oracle-mcp
@@ -55,7 +55,7 @@ npm install -g claude-oracle-mcp
 Optionally, install the skill to teach Claude when to proactively use oracle:
 
 ```bash
-bunx skills add Vvkmnn/claude-oracle-mcp --skill claude-oracle --global
+npx skills add Vvkmnn/claude-oracle-mcp --skill claude-oracle --global
 ```
 
 This makes Claude automatically search for relevant tools before planning, when encountering errors, or at session start. The MCP works without the skill, but the skill improves discoverability.
@@ -80,19 +80,19 @@ Search across all resources for relevant tools and solutions.
 ```
 🔮 search | postgres
 
-┌─ 🔮  ──────────────────────────── Found 5 ─┐
-│ • postgres-mcp (mcp)                        │
-│   PostgreSQL database access                │
-│   smithery.ai • ⭐ verified                 │
-│   Install: bunx postgres-mcp                │
-│                                             │
-│ • postgresql-mcp (mcp)                      │
-│   PostgreSQL MCP server                     │
-│   npmjs.com • ✨ quality                    │
-│   Install: bunx @scope/postgresql-mcp       │
-│                                             │
-│ Total: 17 sources • 15,000+ resources       │
-└─────────────────────────────────────────────┘
+╭─ 🔮 ─────────────────────────────── Found 5 ─╮
+│ • postgres-mcp (mcp)                         │
+│   PostgreSQL database access                 │
+│   smithery.ai • ⭐ verified                  │
+│   Install: npx postgres-mcp                  │
+│                                              │
+│ • postgresql-mcp (mcp)                       │
+│   PostgreSQL MCP server                      │
+│   npmjs.com • ✨ quality                     │
+│   Install: npx @scope/postgresql-mcp         │
+│                                              │
+│ Total: 17 sources • 15,000+ resources        │
+╰──────────────────────────────────────────────╯
 ```
 
 #### `browse`
@@ -109,17 +109,17 @@ Browse resources by category, type, or popularity.
 ```
 🔮 browse | testing
 
-┌─ 🔮  ──────────────────────────── Found 8 ─┐
-│ • tdd-workflows (plugin)                    │
-│   Test-driven development workflow          │
-│   claude-code-plugins-plus • 258 plugins    │
-│                                             │
-│ • pytest-mcp (mcp)                          │
-│   Python testing framework                  │
-│   smithery.ai • ⭐ verified                 │
-│                                             │
-│ Total: 17 sources • 15,000+ resources       │
-└─────────────────────────────────────────────┘
+╭─ 🔮 ─────────────────────────────── Found 8 ─╮
+│ • tdd-workflows (plugin)                     │
+│   Test-driven development workflow           │
+│   claude-code-plugins-plus • 258 plugins     │
+│                                              │
+│ • pytest-mcp (mcp)                           │
+│   Python testing framework                   │
+│   smithery.ai • ⭐ verified                  │
+│                                              │
+│ Total: 17 sources • 15,000+ resources        │
+╰──────────────────────────────────────────────╯
 ```
 
 #### `sources`
@@ -135,30 +135,30 @@ Show all available data sources and their status.
 ```
 🔮 sources | 17 total
 
-┌─ 🔮  ───────────────────────────── 15,000+ total ─┐
-│ Plugins (303):
-│   • claude-code-plugins-plus: 258 ✓
-│   • claude-plugins-official: 45 ✓
-│
-│ MCP Servers (14,358):
-│   • smithery.ai: 500 ✓
-│   • playbooks.com: 1,000+ ✓
-│   • npmjs.com: 250 ✓
-│   • modelcontextprotocol.io: 248 ✓
-│   • glama.ai: 662 ✓
-│   • wong2/awesome-mcp-servers: 200+ ✓
-│   • punkpeye/awesome-mcp-servers: 400+ ✓
-│   • collabnix/awesome-mcp-lists: 100+ ✓
-│
-│ Skills (339):
-│   • awesome-agent-skills: 339 ✓
-│   • awesome-claude-code: 200+ ✓
-│   • jmanhype/awesome-claude-code: 50+ ✓
-│   • skillsmp: 25,000 (optional key)
-└──────────────────────────────────────────────────────┘
+╭─ 🔮 ─────────────────────────────── 15,000+ total ─╮
+│ Plugins (303):                                     │
+│   • claude-code-plugins-plus: 258 ✓                │
+│   • claude-plugins-official: 45 ✓                  │
+│                                                    │
+│ MCP Servers (14,358):                              │
+│   • smithery.ai: 500 ✓                             │
+│   • playbooks.com: 1,000+ ✓                        │
+│   • npmjs.com: 250 ✓                               │
+│   • modelcontextprotocol.io: 248 ✓                 │
+│   • glama.ai: 662 ✓                                │
+│   • wong2/awesome-mcp-servers: 200+ ✓              │
+│   • punkpeye/awesome-mcp-servers: 400+ ✓           │
+│   • collabnix/awesome-mcp-lists: 100+ ✓            │
+│                                                    │
+│ Skills (339):                                      │
+│   • awesome-agent-skills: 339 ✓                    │
+│   • awesome-claude-code: 200+ ✓                    │
+│   • jmanhype/awesome-claude-code: 50+ ✓            │
+│   • skillsmp: 25,000 (optional key)                │
+╰────────────────────────────────────────────────────╯
 ```
 
-## how it works
+## methodology
 
 Ask a question, get install commands:
 
@@ -235,10 +235,9 @@ Ask a question, get install commands:
 ## development
 
 ```bash
-git clone https://github.com/Vvkmnn/claude-oracle-mcp
-cd claude-oracle-mcp
-npm install
-npm run build
+git clone https://github.com/vvkmnn/claude-oracle-mcp && cd claude-oracle-mcp
+npm install && npm run build
+npm test
 ```
 
 **Package requirements:**
@@ -246,21 +245,52 @@ npm run build
 - **Node.js**: >=20.0.0 (ES modules)
 - **npm**: >=10.0.0 (package-lock v3)
 - **Runtime**: `@modelcontextprotocol/sdk`, `fast-xml-parser`
-- **Zero external databases** - works with `bunx`
+- **Zero external databases** - works with `npx`
 
 **Development workflow:**
 
 ```bash
-npm run build          # TypeScript compilation
-npm run watch          # Watch mode with tsc --watch
-node dist/index.js     # Run MCP server directly (stdio)
+npm run build          # TypeScript compilation with executable permissions
+npm run dev            # Watch mode with tsc --watch
+npm run start          # Run the MCP server directly
+npm run lint           # ESLint code quality checks
+npm run lint:fix       # Auto-fix linting issues
+npm run format         # Prettier formatting (src/)
+npm run format:check   # Check formatting without changes
+npm run type-check     # TypeScript validation without emit
+npm run test           # Run help command + type check
+npm run prepublishOnly # Pre-publish validation (build + lint + format:check)
 ```
 
-**Contributing:**
+**Git hooks (via Husky):**
 
-- Fork the repository and create feature branches
+- **pre-commit**: Auto-formats staged `.ts` files with Prettier and ESLint
+
+Contributing:
+
+- Please fork the repository and create feature branches
 - Test with multiple data sources before submitting PRs
-- Follow TypeScript strict mode and [MCP protocol](https://modelcontextprotocol.io/specification)
+- Follow TypeScript strict mode and [MCP protocol](https://modelcontextprotocol.io/specification) standards
+
+Learn from examples:
+
+- [Official MCP servers](https://github.com/modelcontextprotocol/servers) for reference implementations
+- [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) for best practices
+- [Creating Node.js modules](https://docs.npmjs.com/creating-node-js-modules) - NPM package development guide
+
+## alternatives
+
+**[1mcpserver](https://github.com/particlefuture/1mcpserver)** - MCP server discovery from multiple registries. **[Smithery](https://smithery.ai)**, **[Glama](https://glama.ai)**, **[SkillsMP](https://skillsmp.com)** - Individual registries, each searchable independently.
+
+| Feature             | claude-oracle-mcp                              | 1mcpserver              | Single registry                   |
+| ------------------- | ---------------------------------------------- | ----------------------- | --------------------------------- |
+| **Resource types**  | MCP + plugins + skills                         | MCP servers only        | Usually one type                  |
+| **Sources**         | 17 (registries + awesome lists + marketplaces) | Registry searches       | One source at a time              |
+| **Skills/plugins**  | Yes (339 skills, 303 plugins)                  | No                      | Usually no                        |
+| **Setup**           | One MCP, one command                           | One MCP, one command    | Separate account/API per registry |
+| **Cross-source**    | Deduplicated, ranked results                   | Per-registry            | Manual comparison                 |
+| **Caching**         | In-memory TTL (6-24h)                          | Per-request             | Varies                            |
+| **Install commands**| Included in results                            | Included in results     | Varies                            |
 
 ## license
 
@@ -268,6 +298,6 @@ node dist/index.js     # Run MCP server directly (stdio)
 
 ---
 
-![Aeneas and the Cumaean Sibyl](logo/oracle.jpg)
+<a href="https://en.wikipedia.org/wiki/Cumaean_Sibyl#/media/File:Aeneas_and_the_Cumaean_Sibyl_(by_Fran%C3%A7ois_Perrier).jpg"><img src="logo/oracle.jpg" alt="Aeneas and the Cumaean Sibyl" width="336"></a>
 
-_Aeneas consulting the Cumaean Sibyl by Claude Mellan - The oracle who guided him through the underworld_
+_[**Aeneas consulting the Cumaean Sibyl**](https://en.wikipedia.org/wiki/Cumaean_Sibyl) by [**Claude Mellan**](https://en.wikipedia.org/wiki/Claude_Mellan) - The oracle who guided him through the underworld_
