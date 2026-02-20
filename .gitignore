@@ -23,3 +23,7 @@ test_search.sh
 # Development
 *.log
 *.tmp
+
+# Generated docs
+CLAUDE.md
+COMPARISON.md

@@ -1,0 +1,33 @@
+# Source
+src/
+tsconfig.json
+
+# GitHub
+.github/
+
+# Dev configs
+.prettierrc
+eslint.config.mjs
+.releaserc.json
+.nvmrc
+.gitignore
+
+# Demo & docs
+demo/
+logo/
+COMPARISON.md
+CLAUDE.md
+
+# Tests
+test/
+tests/
+*.test.ts
+*.spec.ts
+
+# Local dev
+.claude/
+.mcp.json
+test-mcp.json
+test_search.sh
+*.log
+*.tmp
