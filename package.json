@@ -1,7 +1,7 @@
 {
   "name": "claude-oracle-mcp",
   "version": "0.1.1",
-  "description": "MCP server for discovering Claude Code skills, plugins, and MCP servers from multiple sources",
+  "description": "An MCP server for discovering skills, plugins, and MCP servers in Claude Code",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -9,6 +9,7 @@
   },
   "files": [
     "dist/",
+    ".claude/skills/",
     "README.md",
     "LICENSE"
   ],
@@ -27,19 +28,30 @@
     "prepare": "husky || true"
   },
   "keywords": [
-    "mcp",
     "claude",
     "claude-code",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
     "anthropic",
     "llm",
+    "ai",
+    "ai-tools",
+    "ai-agent",
     "skills",
     "plugins",
     "discovery",
     "agent-skills",
-    "mcp-server",
-    "developer-tools",
+    "tool-discovery",
+    "package-search",
+    "registry",
+    "marketplace",
     "npx",
-    "zero-install"
+    "zero-install",
+    "cli",
+    "developer-tools",
+    "typescript",
+    "nodejs"
   ],
   "author": "Vvkmnn",
   "license": "MIT",
