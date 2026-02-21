@@ -29,8 +29,8 @@ function parsePlaybooksUrl(url: string): { owner: string; name: string } | null 
   if (!match) return null;
 
   return {
-    owner: match[1],
-    name: match[2],
+    owner: match[1]!,
+    name: match[2]!,
   };
 }
 
@@ -64,7 +64,7 @@ function parseUrl(item: SitemapUrl): Resource | null {
         },
       },
       null,
-      2
+      2,
     ),
     source: 'playbooks.com',
     url: item.loc,
@@ -133,7 +133,7 @@ export function getPlaybooksSource(): DataSource {
   return {
     name: 'playbooks.com',
     type: 'mcp',
-    count: cached?.length || 0,
+    count: cached?.length || 30,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };

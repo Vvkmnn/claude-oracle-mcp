@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { createRequire } from 'module';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
@@ -8,16 +9,21 @@ import { search, browse, getSources } from './sources/aggregator.js';
 import type { SearchInput, BrowseInput } from './types.js';
 import { formatSearchResults, formatBrowseResults, formatSources } from './formatter.js';
 
+const require = createRequire(import.meta.url);
+const { version } = require('../package.json') as { version: string };
+
 const server = new Server(
   {
     name: 'claude-oracle-mcp',
-    version: '0.1.0',
+    version,
   },
   {
     capabilities: {
       tools: {},
     },
-  }
+    instructions:
+      'Claude Oracle discovers skills, plugins, and MCP servers from 17 sources. Use "search" to find tools by query, "browse" to explore by category, and "sources" to check data source status.',
+  },
 );
 
 // List available tools
@@ -183,7 +189,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 // Start server
-async function main() {
+async function main(): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('claude-oracle MCP server running on stdio');

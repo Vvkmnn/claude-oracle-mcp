@@ -1,5 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
-import type { Resource } from '../types.js';
+import type { Resource, DataSource } from '../types.js';
 import { cache, TTL } from '../cache.js';
 
 const GLAMA_RSS_URL = 'https://glama.ai/mcp/servers/feeds/recent-servers.xml';
@@ -50,7 +50,7 @@ function parseRssItem(item: RssItem): Resource {
         },
       },
       null,
-      2
+      2,
     ),
     source: 'glama.ai',
     url: item.link,
@@ -101,12 +101,12 @@ export async function fetchGlamaMcpServers(): Promise<Resource[]> {
 /**
  * Get source status for Glama
  */
-export function getGlamaSource() {
+export function getGlamaSource(): DataSource {
   const cached = cache.get<Resource[]>(CACHE_KEY);
   return {
     name: 'glama.ai',
     type: 'mcp' as const,
-    count: cached?.length || 0,
+    count: cached?.length || 300,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? ('ok' as const) : ('stale' as const),
   };

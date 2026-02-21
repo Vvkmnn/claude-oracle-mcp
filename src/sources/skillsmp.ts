@@ -1,4 +1,4 @@
-import type { Resource, SkillsmpResponse, SkillsmpResult } from '../types.js';
+import type { Resource, DataSource, SkillsmpResponse, SkillsmpResult } from '../types.js';
 import { cache, TTL } from '../cache.js';
 
 const SKILLSMP_BASE_URL = 'https://skillsmp.com/api/v1/skills';
@@ -31,7 +31,8 @@ function parseSkillsmpResult(result: SkillsmpResult): Resource {
     source: 'skillsmp',
     url: result.github_url,
     category: result.category,
-    stars: result.downloads, // Using downloads as popularity metric
+    stars: result.rating, // Use rating as quality signal; downloads tracked separately
+    popularity_score: result.downloads,
   };
 }
 
@@ -40,7 +41,7 @@ function parseSkillsmpResult(result: SkillsmpResult): Resource {
  */
 export async function searchSkillsmp(
   query: string,
-  options: { semantic?: boolean; limit?: number } = {}
+  options: { semantic?: boolean; limit?: number } = {},
 ): Promise<Resource[]> {
   const apiKey = getApiKey();
   if (!apiKey) {
@@ -87,7 +88,7 @@ export async function searchSkillsmp(
 /**
  * Get source status for SkillsMP
  */
-export function getSkillsmpSource() {
+export function getSkillsmpSource(): DataSource {
   const hasKey = isSkillsmpAvailable();
   return {
     name: 'skillsmp',

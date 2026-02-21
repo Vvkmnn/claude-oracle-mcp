@@ -133,7 +133,7 @@ async function fetchAllResources(): Promise<Resource[]> {
       typeof r.name === 'string' &&
       r.name.trim() !== '' &&
       typeof r.description === 'string' &&
-      r.description.trim() !== ''
+      r.description.trim() !== '',
   );
 }
 
@@ -144,8 +144,6 @@ export async function search(input: SearchInput): Promise<SearchOutput> {
   const { query, type = 'all', semantic = false, limit = 5 } = input;
   const sourcesSearched: string[] = [];
   const results: Resource[] = [];
-  const cached = true;
-
   // If semantic search requested and SkillsMP available, search there first
   if (semantic && isSkillsmpAvailable()) {
     const skillsmpResults = await searchSkillsmp(query, { semantic: true, limit });
@@ -167,7 +165,7 @@ export async function search(input: SearchInput): Promise<SearchOutput> {
     'playbooks.com',
     'wong2/awesome-mcp-servers',
     'jmanhype/awesome-claude-code',
-    'collabnix/awesome-mcp-lists'
+    'collabnix/awesome-mcp-lists',
   );
 
   // Filter by type
@@ -184,8 +182,8 @@ export async function search(input: SearchInput): Promise<SearchOutput> {
   const merged: Resource[] = [];
   const maxLen = Math.max(results.length, scored.length);
   for (let i = 0; i < maxLen && merged.length < limit; i++) {
-    if (i < results.length) merged.push(results[i]);
-    if (i < scored.length && merged.length < limit) merged.push(scored[i]);
+    if (i < results.length) merged.push(results[i]!);
+    if (i < scored.length && merged.length < limit) merged.push(scored[i]!);
   }
 
   // Final deduplication
@@ -195,7 +193,6 @@ export async function search(input: SearchInput): Promise<SearchOutput> {
     results: finalResults,
     sources_searched: sourcesSearched,
     total_available: allResources.length,
-    cached,
   };
 }
 
@@ -228,7 +225,7 @@ export async function browse(input: BrowseInput): Promise<SearchOutput> {
     filtered = filtered.filter(
       (r) =>
         r.category?.toLowerCase().includes(cat) ||
-        r.keywords?.some((k) => k?.toLowerCase().includes(cat))
+        r.keywords?.some((k) => k?.toLowerCase().includes(cat)),
     );
   }
 
@@ -247,7 +244,6 @@ export async function browse(input: BrowseInput): Promise<SearchOutput> {
     results: filtered.slice(0, limit),
     sources_searched: sourcesSearched,
     total_available: allResources.length,
-    cached: true,
   };
 }
 

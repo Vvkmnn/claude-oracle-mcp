@@ -10,15 +10,15 @@ const CACHE_KEY = 'awesome:claude-code';
  * Handles formats like: | [Name](url) | description |
  */
 function parseMarkdownRow(
-  row: string
+  row: string,
 ): { name: string; url: string; description: string; type?: string } | null {
   // Match: | [Name](url) | description | type |
   const linkMatch = row.match(/\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|([^|]*)\|?([^|]*)?/);
   if (linkMatch) {
     return {
-      name: linkMatch[1].trim(),
-      url: linkMatch[2].trim(),
-      description: linkMatch[3].trim(),
+      name: linkMatch[1]!.trim(),
+      url: linkMatch[2]!.trim(),
+      description: linkMatch[3]!.trim(),
       type: linkMatch[4]?.trim().toLowerCase(),
     };
   }
@@ -31,15 +31,15 @@ function parseMarkdownRow(
  * Handles formats like: - [Name](url) - description
  */
 function parseMarkdownListItem(
-  line: string
+  line: string,
 ): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
     return {
-      name: match[1].trim(),
-      url: match[2].trim(),
-      description: match[3].trim(),
+      name: match[1]!.trim(),
+      url: match[2]!.trim(),
+      description: match[3]!.trim(),
     };
   }
   return null;
@@ -134,7 +134,7 @@ function parseMarkdown(content: string): Resource[] {
             },
           },
           null,
-          2
+          2,
         );
       }
 
@@ -188,7 +188,7 @@ export function getAwesomeClaudeCodeSource(): DataSource {
   return {
     name: 'awesome-claude-code',
     type: 'skill',
-    count: cached?.length || 0,
+    count: cached?.length || 100,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };

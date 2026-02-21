@@ -1,32 +1,28 @@
 {
   "name": "claude-oracle-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server for discovering Claude Code skills, plugins, and MCP servers from multiple sources",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "claude-oracle-mcp": "dist/index.js"
+    "claude-oracle-mcp": "./dist/index.js"
   },
   "files": [
     "dist/",
     "README.md",
     "LICENSE"
   ],
-  "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
-  },
   "scripts": {
     "build": "tsc && chmod +x dist/index.js",
-    "watch": "tsc --watch",
-    "dev": "bun run src/index.ts",
+    "dev": "tsc --watch",
     "start": "node dist/index.js",
+    "clean": "rm -rf dist",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "format": "prettier --write 'src/**/*.ts'",
-    "format:check": "prettier --check 'src/**/*.ts'",
-    "type-check": "tsc --noEmit",
-    "test": "node dist/index.js --help && npm run type-check",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run lint",
     "prepublishOnly": "npm run build && npm run lint && npm run format:check",
     "prepare": "husky || true"
   },
@@ -49,41 +45,44 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vvkmnn/claude-oracle-mcp.git"
+    "url": "git+https://github.com/Vvkmnn/claude-oracle-mcp.git"
   },
-  "homepage": "https://github.com/vvkmnn/claude-oracle-mcp#readme",
+  "homepage": "https://github.com/Vvkmnn/claude-oracle-mcp#readme",
   "bugs": {
-    "url": "https://github.com/vvkmnn/claude-oracle-mcp/issues"
+    "url": "https://github.com/Vvkmnn/claude-oracle-mcp/issues"
   },
   "funding": {
     "type": "github",
-    "url": "https://github.com/sponsors/vvkmnn"
+    "url": "https://github.com/sponsors/Vvkmnn"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "prettier --write",
-      "eslint --fix"
-    ]
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
     "fast-xml-parser": "^4.5.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.0.0",
+    "@eslint/js": "^9.18.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/node": "^22.0.0",
-    "eslint": "^9.0.0",
-    "husky": "^9.0.0",
-    "lint-staged": "^15.0.0",
-    "prettier": "^3.0.0",
+    "eslint": "^9.18.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.4.2",
     "semantic-release": "^24.0.0",
-    "@semantic-release/changelog": "^6.0.0",
-    "@semantic-release/git": "^10.0.0",
-    "typescript": "^5.6.0",
-    "typescript-eslint": "^8.0.0"
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.18.0"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

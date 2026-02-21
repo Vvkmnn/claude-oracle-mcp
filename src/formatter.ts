@@ -14,14 +14,43 @@ const BOTTOM_RIGHT = '─╯';
 const HORIZONTAL = '─';
 
 /**
+ * Wrap a line to fit within maxWidth, preserving leading indent
+ */
+function wrapLine(line: string, maxWidth: number): string[] {
+  if (line.length <= maxWidth) return [line];
+  const indent = line.match(/^(\s*)/)?.[0] ?? '';
+  const words = line.trim().split(/\s+/);
+  const wrapped: string[] = [];
+  let current = indent;
+  for (const word of words) {
+    const test = current.length === indent.length ? `${current}${word}` : `${current} ${word}`;
+    if (test.length > maxWidth && current.length > indent.length) {
+      wrapped.push(current);
+      current = `${indent}  ${word}`;
+    } else {
+      current = test;
+    }
+  }
+  if (current.trim()) wrapped.push(current);
+  return wrapped;
+}
+
+/**
  * Create a bordered box with header
  */
 function createBox(header: string, content: string[], width = 65): string {
+  // Wrap content lines to fit box width (width - 2 for "│ " prefix)
+  const innerWidth = width - 2;
+  const wrappedContent: string[] = [];
+  for (const line of content) {
+    wrappedContent.push(...wrapLine(line, innerWidth));
+  }
+
   const topBorder = `${TOP_LEFT} ${ORACLE_EMOJI}  ${HORIZONTAL.repeat(width - header.length - 8)}${header} ${TOP_RIGHT}`;
   const bottomBorder = `${BOTTOM_LEFT}${HORIZONTAL.repeat(width)}${BOTTOM_RIGHT}`;
 
   const lines = [topBorder];
-  for (const line of content) {
+  for (const line of wrappedContent) {
     lines.push(`${SIDE} ${line}`);
   }
   lines.push(bottomBorder);
@@ -47,35 +76,39 @@ export function formatSearchResults(output: SearchOutput): string {
 
   for (const resource of results) {
     // Resource name and type
-    let line = `• ${resource.name} (${resource.type})`;
+    content.push(`• ${resource.name} (${resource.type})`);
 
-    // Description on same line if short, otherwise next line
+    // Description
     if (resource.description) {
-      if (resource.description.length < 50) {
-        line += ` - ${resource.description}`;
-      } else {
-        content.push(line);
-        content.push(`  ${resource.description.slice(0, 60)}...`);
-        line = '';
-      }
+      content.push(`  ${resource.description}`);
     }
 
-    if (line) content.push(line);
-
-    // Source attribution with indicators
-    let attribution = `  ${resource.source}`;
-    if (resource.verified) attribution += ' • ⭐ verified';
-    if (resource.stars) attribution += ` • ${resource.stars} stars`;
-    if (resource.quality_score && resource.quality_score > 0.7) {
-      attribution += ' • ✨ quality';
+    // URL for research/follow-up
+    if (resource.url) {
+      content.push(`  ${resource.url}`);
     }
-    content.push(attribution);
+
+    // Install command
+    if (resource.install_command) {
+      content.push(`  Install: ${resource.install_command}`);
+    }
+
+    // Compact metadata line: source + author + signals (raw values, no decoration)
+    const meta: string[] = [resource.source];
+    if (resource.author) meta.push(`by ${resource.author}`);
+    if (resource.stars) meta.push(`${resource.stars} stars`);
+    if (resource.popularity_score) meta.push(`${resource.popularity_score} downloads`);
+    if (resource.quality_score) meta.push(`quality: ${resource.quality_score}`);
+    if (resource.verified) meta.push('verified');
+    if (resource.version) meta.push(`v${resource.version}`);
+    if (resource.category) meta.push(resource.category);
+    content.push(`  [${meta.join(' | ')}]`);
     content.push(''); // Empty line between results
   }
 
   // Summary
   content.push(
-    `Total: ${sources_searched.length} sources • ${total_available.toLocaleString()} resources available`
+    `Total: ${sources_searched.length} sources • ${total_available.toLocaleString()} resources available`,
   );
 
   return createBox(`Found ${results.length}`, content);
@@ -98,10 +131,10 @@ export function formatSources(sources: DataSource[], total: number): string {
   const byType = sources.reduce(
     (acc, source) => {
       if (!acc[source.type]) acc[source.type] = [];
-      acc[source.type].push(source);
+      acc[source.type]!.push(source);
       return acc;
     },
-    {} as Record<string, DataSource[]>
+    {} as Record<string, DataSource[]>,
   );
 
   // Plugin sources

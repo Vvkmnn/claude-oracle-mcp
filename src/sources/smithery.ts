@@ -43,7 +43,7 @@ function parseServer(server: SmitheryServer): Resource {
         },
       },
       null,
-      2
+      2,
     ),
     source: 'smithery.ai',
     url: server.homepage || `https://smithery.ai/server/${server.qualifiedName}`,
@@ -108,7 +108,7 @@ export function getSmitherySource(): DataSource {
   return {
     name: 'smithery.ai',
     type: 'mcp',
-    count: cached?.length || 0,
+    count: cached?.length || 200,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };

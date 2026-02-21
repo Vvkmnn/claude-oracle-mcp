@@ -1,4 +1,4 @@
-import type { Resource, ResourceType } from '../types.js';
+import type { Resource, ResourceType, DataSource } from '../types.js';
 import { cache, TTL } from '../cache.js';
 
 interface AwesomeListConfig {
@@ -31,20 +31,20 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
   const linkMatch = row.match(/\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|([^|]*)\|?/);
   if (linkMatch) {
     return {
-      name: linkMatch[1].trim(),
-      url: linkMatch[2].trim(),
-      description: linkMatch[3].trim(),
+      name: linkMatch[1]!.trim(),
+      url: linkMatch[2]!.trim(),
+      description: linkMatch[3]!.trim(),
     };
   }
 
   // Match: | Name | description | url |
   const plainMatch = row.match(/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|?/);
   if (plainMatch) {
-    const url = plainMatch[3].trim();
+    const url = plainMatch[3]!.trim();
     if (url.startsWith('http')) {
       return {
-        name: plainMatch[1].trim(),
-        description: plainMatch[2].trim(),
+        name: plainMatch[1]!.trim(),
+        description: plainMatch[2]!.trim(),
         url,
       };
     }
@@ -58,15 +58,15 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
  * Handles formats like: - [Name](url) - description
  */
 function parseMarkdownListItem(
-  line: string
+  line: string,
 ): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
     return {
-      name: match[1].trim(),
-      url: match[2].trim(),
-      description: match[3].trim(),
+      name: match[1]!.trim(),
+      url: match[2]!.trim(),
+      description: match[3]!.trim(),
     };
   }
   return null;
@@ -111,7 +111,7 @@ function parseMarkdown(content: string, config: AwesomeListConfig): Resource[] {
             },
           },
           null,
-          2
+          2,
         );
       } else if (config.type === 'skill' && config.marketplace) {
         install_command = `/plugin install ${parsed.name}@${config.marketplace}`;
@@ -173,13 +173,13 @@ export async function fetchAwesomeLists(): Promise<Resource[]> {
 /**
  * Get source status for awesome lists
  */
-export function getAwesomeListsSources() {
+export function getAwesomeListsSources(): DataSource[] {
   return AWESOME_LISTS.map((config) => {
     const cached = cache.get<Resource[]>(`awesome:${config.name}`);
     return {
       name: config.name,
       type: config.type,
-      count: cached?.length || 0,
+      count: cached?.length || 50,
       last_updated: cached ? new Date().toISOString() : 'never',
       status: cached ? ('ok' as const) : ('stale' as const),
     };

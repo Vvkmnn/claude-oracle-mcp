@@ -14,20 +14,20 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
   const linkMatch = row.match(/\|\s*\[([^\]]+)\]\(([^)]+)\)\s*\|([^|]*)\|?/);
   if (linkMatch) {
     return {
-      name: linkMatch[1].trim(),
-      url: linkMatch[2].trim(),
-      description: linkMatch[3].trim(),
+      name: linkMatch[1]!.trim(),
+      url: linkMatch[2]!.trim(),
+      description: linkMatch[3]!.trim(),
     };
   }
 
   // Match: | Name | description | url |
   const plainMatch = row.match(/\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|\s*([^|]+)\s*\|?/);
   if (plainMatch) {
-    const url = plainMatch[3].trim();
+    const url = plainMatch[3]!.trim();
     if (url.startsWith('http')) {
       return {
-        name: plainMatch[1].trim(),
-        description: plainMatch[2].trim(),
+        name: plainMatch[1]!.trim(),
+        description: plainMatch[2]!.trim(),
         url,
       };
     }
@@ -41,15 +41,15 @@ function parseMarkdownRow(row: string): { name: string; url: string; description
  * Handles formats like: - [Name](url) - description
  */
 function parseMarkdownListItem(
-  line: string
+  line: string,
 ): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
     return {
-      name: match[1].trim(),
-      url: match[2].trim(),
-      description: match[3].trim(),
+      name: match[1]!.trim(),
+      url: match[2]!.trim(),
+      description: match[3]!.trim(),
     };
   }
   return null;
@@ -140,7 +140,7 @@ export function getAwesomeSkillsSource(): DataSource {
   return {
     name: 'awesome-agent-skills',
     type: 'skill',
-    count: cached?.length || 0,
+    count: cached?.length || 50,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };

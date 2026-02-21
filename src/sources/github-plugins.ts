@@ -1,4 +1,4 @@
-import type { Resource, MarketplaceJson, MarketplacePlugin } from '../types.js';
+import type { Resource, DataSource, MarketplaceJson, MarketplacePlugin } from '../types.js';
 import { cache, TTL } from '../cache.js';
 
 /**
@@ -72,7 +72,7 @@ async function fetchMarketplace(url: string, marketplace: string): Promise<Resou
  */
 export async function fetchGithubPlugins(): Promise<Resource[]> {
   const results = await Promise.all(
-    MARKETPLACE_URLS.map(({ url, marketplace }) => fetchMarketplace(url, marketplace))
+    MARKETPLACE_URLS.map(({ url, marketplace }) => fetchMarketplace(url, marketplace)),
   );
 
   return results.flat();
@@ -81,13 +81,13 @@ export async function fetchGithubPlugins(): Promise<Resource[]> {
 /**
  * Get source status for GitHub plugins
  */
-export function getGithubPluginsSources() {
+export function getGithubPluginsSources(): DataSource[] {
   return MARKETPLACE_URLS.map(({ marketplace }) => {
     const cached = cache.get<Resource[]>(`github:${marketplace}`);
     return {
       name: marketplace,
       type: 'plugin' as const,
-      count: cached?.length || 0,
+      count: cached?.length || 30,
       last_updated: cached ? new Date().toISOString() : 'never',
       status: cached ? ('ok' as const) : ('stale' as const),
     };

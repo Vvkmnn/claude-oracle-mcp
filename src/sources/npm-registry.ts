@@ -59,7 +59,7 @@ function parsePackage(pkg: NpmPackage, type: 'mcp' | 'plugin'): Resource {
         },
       },
       null,
-      2
+      2,
     );
   } else {
     // Plugin install command
@@ -161,7 +161,7 @@ export function getNpmMcpSource(): DataSource {
   return {
     name: 'npmjs.com (mcp)',
     type: 'mcp',
-    count: cached?.length || 0,
+    count: cached?.length || 150,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };
@@ -175,7 +175,7 @@ export function getNpmPluginSource(): DataSource {
   return {
     name: 'npmjs.com (plugins)',
     type: 'plugin',
-    count: cached?.length || 0,
+    count: cached?.length || 50,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };

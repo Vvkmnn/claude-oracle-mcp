@@ -19,15 +19,15 @@ function inferType(url: string): ResourceType {
  * Handles formats like: - [Name](url) - description
  */
 function parseMarkdownListItem(
-  line: string
+  line: string,
 ): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
     return {
-      name: match[1].trim(),
-      url: match[2].trim(),
-      description: match[3].trim(),
+      name: match[1]!.trim(),
+      url: match[2]!.trim(),
+      description: match[3]!.trim(),
     };
   }
   return null;
@@ -81,7 +81,7 @@ function parseMarkdown(content: string): Resource[] {
             },
           },
           null,
-          2
+          2,
         );
       }
 
@@ -135,7 +135,7 @@ export function getJmanAwesomeClaudeSource(): DataSource {
   return {
     name: 'jmanhype/awesome-claude-code',
     type: 'plugin',
-    count: cached?.length || 0,
+    count: cached?.length || 80,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };

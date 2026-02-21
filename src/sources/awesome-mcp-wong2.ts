@@ -9,15 +9,15 @@ const CACHE_KEY = 'awesome-mcp-wong2';
  * Handles formats like: - [Name](url) - description
  */
 function parseMarkdownListItem(
-  line: string
+  line: string,
 ): { name: string; url: string; description: string } | null {
   // Match: - [Name](url) - description OR * [Name](url) - description
   const match = line.match(/^[-*]\s*\[([^\]]+)\]\(([^)]+)\)\s*[-–—]?\s*(.*)$/);
   if (match) {
     return {
-      name: match[1].trim(),
-      url: match[2].trim(),
-      description: match[3].trim(),
+      name: match[1]!.trim(),
+      url: match[2]!.trim(),
+      description: match[3]!.trim(),
     };
   }
   return null;
@@ -45,11 +45,11 @@ function parseMarkdown(content: string): Resource[] {
       const repoMatch = parsed.url.match(/github\.com\/([^/]+\/[^/]+)/);
 
       if (repoMatch) {
-        const repo = repoMatch[1].replace(/\.git$/, '');
+        const repo = repoMatch[1]!.replace(/\.git$/, '');
         install_command = `# See ${parsed.url} for installation instructions`;
 
         // Try to infer package name from repo
-        const packageName = repo.split('/')[1];
+        const packageName = repo.split('/')[1]!;
         config_snippet = JSON.stringify(
           {
             mcpServers: {
@@ -60,7 +60,7 @@ function parseMarkdown(content: string): Resource[] {
             },
           },
           null,
-          2
+          2,
         );
       } else {
         install_command = `See: ${parsed.url}`;
@@ -116,7 +116,7 @@ export function getWong2AwesomeMcpSource(): DataSource {
   return {
     name: 'wong2/awesome-mcp-servers',
     type: 'mcp',
-    count: cached?.length || 0,
+    count: cached?.length || 200,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };

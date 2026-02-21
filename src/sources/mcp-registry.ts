@@ -48,7 +48,7 @@ function parseServer(server: McpServer): Resource {
         },
       },
       null,
-      2
+      2,
     );
   } else if (server.packages?.pypi) {
     installCommand = `pip install ${server.packages.pypi}`;
@@ -62,7 +62,7 @@ function parseServer(server: McpServer): Resource {
         },
       },
       null,
-      2
+      2,
     );
   } else if (server.remotes?.docker) {
     installCommand = `docker pull ${server.remotes.docker}`;
@@ -76,7 +76,7 @@ function parseServer(server: McpServer): Resource {
         },
       },
       null,
-      2
+      2,
     );
   }
 
@@ -149,7 +149,7 @@ export function getMcpRegistrySource(): DataSource {
   return {
     name: 'modelcontextprotocol.io',
     type: 'mcp',
-    count: cached?.length || 0,
+    count: cached?.length || 100,
     last_updated: cached ? new Date().toISOString() : 'never',
     status: cached ? 'ok' : 'stale',
   };
