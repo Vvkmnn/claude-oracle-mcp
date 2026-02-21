@@ -2,7 +2,7 @@
 
 # claude-oracle-mcp
 
-A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for discovering [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, plugins, and MCP servers. Search 15,000+ resources from 17 sources with zero setup.
+An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for discovering [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, plugins, and MCP servers. Search 15,000+ resources from 17 sources with zero setup.
 
 <br clear="right">
 
@@ -48,25 +48,26 @@ Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
 }
 ```
 
-That's it; there is **no `npm install` required** as there are no external dependencies or local databases, only search algorithms.
+There is **no `npm install` required** -- no external dependencies or local databases, only search algorithms.
 
-However, in the unlikely event that you pull the wrong package / `npx` registry is out of date, you can force resolution issues in certain environments with:
+However, if `npx` resolves the wrong package, you can force resolution with:
 
 ```bash
 npm install -g claude-oracle-mcp
 ```
 
-## skill
+## [skill](.claude/skills/claude-oracle)
 
 Optionally, install the skill to teach Claude when to proactively use oracle:
 
 ```bash
 npx skills add Vvkmnn/claude-oracle-mcp --skill claude-oracle --global
+# Optional: add --yes to skip interactive prompt and install to all agents
 ```
 
 This makes Claude automatically search for relevant tools before planning, when encountering errors, or at session start. The MCP works without the skill, but the skill improves discoverability.
 
-## plugin
+## [plugin](https://github.com/Vvkmnn/claude-emporium)
 
 For automated tool discovery with hooks, install from the [claude-emporium](https://github.com/Vvkmnn/claude-emporium) marketplace:
 
@@ -326,6 +327,14 @@ How [claude-oracle-mcp](https://github.com/Vvkmnn/claude-oracle-mcp) [works](htt
 
 > **Note:** Pagination is limited for faster responses (~3s). Full datasets available through caching on subsequent searches.
 
+**Design principles:**
+
+- **Aggregated search** -- single query searches 17 sources simultaneously
+- **Zero-config** -- 16/17 sources work without API keys
+- **Deduplication** -- cross-source result merging by name similarity
+- **Relevance scoring** -- weighted name match, description match, and popularity
+- **Offline fallback** -- graceful degradation when sources are unreachable
+
 ## alternatives
 
 Every MCP discovery tool either searches a single registry or requires separate accounts per source. Oracle aggregates 17 sources in one command.
@@ -340,9 +349,9 @@ Every MCP discovery tool either searches a single registry or requires separate 
 | **Caching**         | **In-memory TTL (6-24h)**                      | Per-request             | Varies                            |
 | **Install commands**| **Included in results**                        | Included in results     | Varies                            |
 
-**[1mcpserver](https://github.com/particlefuture/1mcpserver)** — MCP server discovery from multiple registries. Searches MCP servers only — no plugins, no skills. Per-registry results without cross-source dedup or ranking. No caching between requests.
+**[1mcpserver](https://github.com/particlefuture/1mcpserver)** -- MCP server discovery from multiple registries. Searches MCP servers only -- no plugins, no skills. Per-registry results without cross-source dedup or ranking. No caching between requests.
 
-**[Smithery](https://smithery.ai)**, **[Glama](https://glama.ai)**, **[SkillsMP](https://skillsmp.com)** — Individual registries, each searchable independently. Requires separate accounts or API access per registry. Each covers a subset of the ecosystem — no single source has everything. Manual comparison across registries to find the best option. Oracle aggregates all of these (and 14 more sources) with deduplicated, ranked results in one query.
+**[Smithery](https://smithery.ai)**, **[Glama](https://glama.ai)**, **[SkillsMP](https://skillsmp.com)** -- Individual registries, each searchable independently. Requires separate accounts or API access per registry. Each covers a subset of the ecosystem -- no single source has everything. Manual comparison across registries to find the best option. Oracle aggregates all of these (and 14 more sources) with deduplicated, ranked results in one query.
 
 ## development
 
@@ -356,7 +365,7 @@ npm test
 
 - **Node.js**: >=20.0.0 (ES modules)
 - **Runtime**: `@modelcontextprotocol/sdk`, `fast-xml-parser`
-- **Zero external databases** — works with `npx`
+- **Zero external databases** -- works with `npx`
 
 **Development workflow:**
 
@@ -396,7 +405,11 @@ Learn from examples:
 <hr>
 
 <p align="center">
-<a href="https://en.wikipedia.org/wiki/Cumaean_Sibyl"><img src="logo/oracle.jpg" alt="Aeneas and the Cumaean Sibyl — Claude Mellan" width="340"></a>
+<a href="https://en.wikipedia.org/wiki/Cumaean_Sibyl"><img src="logo/oracle.jpg" alt="Aeneas and the Cumaean Sibyl -- Claude Mellan" width="340"></a>
 </p>
 
+<p align="center">
+
 _**[Aeneas and the Cumaean Sibyl](https://en.wikipedia.org/wiki/Cumaean_Sibyl)** by **[Claude Mellan](https://en.wikipedia.org/wiki/Claude_Mellan)**. The oracle who guided Aeneas through the underworld._
+
+</p>
