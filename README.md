@@ -1,16 +1,22 @@
-# claude-oracle-mcp
+<img align="right" src="claude-oracle.svg" alt="claude-oracle-mcp" width="220">
 
-![claude-oracle-mcp](demo/demo.gif)
+# claude-oracle-mcp
 
 A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for discovering [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, plugins, and MCP servers. Search 15,000+ resources from 17 sources with zero setup.
 
+<br clear="right">
+
+![claude-oracle-mcp](demo/demo.gif)
+
 [![npm version](https://img.shields.io/npm/v/claude-oracle-mcp.svg)](https://www.npmjs.com/package/claude-oracle-mcp) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org/) [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#) [![GitHub stars](https://img.shields.io/github/stars/Vvkmnn/claude-oracle-mcp?style=social)](https://github.com/Vvkmnn/claude-oracle-mcp)
+
+---
 
 ## install
 
-Requirements:
+**Requirements:**
 
-> [Claude Code](https://claude.ai/code)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-555?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOCAxMCIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KICA8IS0tIENsYXdkOiBDbGF1ZGUgQ29kZSBtYXNjb3QgLS0+CiAgPCEtLSBEZWNvZGVkIGZyb206IOKWkOKWm+KWiOKWiOKWiOKWnOKWjCAvIOKWneKWnOKWiOKWiOKWiOKWiOKWiOKWm+KWmCAvIOKWmOKWmCDilp3ilp0gLS0+CiAgPCEtLSBTdWItcGl4ZWxzIGFyZSAxIHdpZGUgeCAyIHRhbGwgdG8gbWF0Y2ggdGVybWluYWwgY2hhciBjZWxsIGFzcGVjdCByYXRpbyAtLT4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSIzIiAgeT0iMCIgd2lkdGg9IjEyIiBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSIzIiAgeT0iMiIgd2lkdGg9IjIiICBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSI2IiAgeT0iMiIgd2lkdGg9IjYiICBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSIxMyIgeT0iMiIgd2lkdGg9IjIiICBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSIxIiAgeT0iNCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSIzIiAgeT0iNiIgd2lkdGg9IjEyIiBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSI0IiAgeT0iOCIgd2lkdGg9IjEiICBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSI2IiAgeT0iOCIgd2lkdGg9IjEiICBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSIxMSIgeT0iOCIgd2lkdGg9IjEiICBoZWlnaHQ9IjIiLz4KICA8cmVjdCBmaWxsPSIjZDk3NzU3IiB4PSIxMyIgeT0iOCIgd2lkdGg9IjEiICBoZWlnaHQ9IjIiLz4KPC9zdmc+Cg==)](https://claude.ai/code)
 
 **From shell:**
 
@@ -60,6 +66,26 @@ npx skills add Vvkmnn/claude-oracle-mcp --skill claude-oracle --global
 
 This makes Claude automatically search for relevant tools before planning, when encountering errors, or at session start. The MCP works without the skill, but the skill improves discoverability.
 
+## plugin
+
+For automated tool discovery with hooks, install from the [claude-emporium](https://github.com/Vvkmnn/claude-emporium) marketplace:
+
+```bash
+/plugin marketplace add Vvkmnn/claude-emporium
+/plugin install claude-oracle@claude-emporium
+```
+
+The **claude-oracle** plugin provides:
+
+**Hooks** (targeted, fires before external searches):
+
+- Before WebSearch/WebFetch → Check oracle for existing tools first
+- Before EnterPlanMode → Search for relevant plugins/skills
+
+**Command:** `/oracle-search <query>`
+
+Requires the MCP server installed first. See the emporium for other Claude Code plugins and MCPs.
+
 ## features
 
 [MCP server](https://modelcontextprotocol.io/) that gives Claude access to 15,000+ skills, plugins, and MCP servers from 17 sources. Fast discovery with smart prioritization.
@@ -95,6 +121,33 @@ Search across all resources for relevant tools and solutions.
 ╰──────────────────────────────────────────────╯
 ```
 
+```json
+{
+  "results": [
+    {
+      "name": "postgres-mcp",
+      "type": "mcp",
+      "description": "PostgreSQL database access",
+      "source": "smithery.ai",
+      "install_command": "npx postgres-mcp",
+      "verified": true,
+      "stars": 142
+    },
+    {
+      "name": "postgresql-mcp",
+      "type": "mcp",
+      "description": "PostgreSQL MCP server",
+      "source": "npmjs.com",
+      "install_command": "npx @scope/postgresql-mcp",
+      "quality_score": 0.85
+    }
+  ],
+  "sources_searched": ["smithery.ai", "npmjs.com", "glama.ai", "modelcontextprotocol.io"],
+  "total_available": 15000,
+  "cached": false
+}
+```
+
 #### `browse`
 
 Browse resources by category, type, or popularity.
@@ -120,6 +173,32 @@ Browse resources by category, type, or popularity.
 │                                              │
 │ Total: 17 sources • 15,000+ resources        │
 ╰──────────────────────────────────────────────╯
+```
+
+```json
+{
+  "results": [
+    {
+      "name": "tdd-workflows",
+      "type": "plugin",
+      "description": "Test-driven development workflow",
+      "source": "claude-code-plugins-plus",
+      "install_command": "git clone https://github.com/user/tdd-workflows ~/.claude/plugins/tdd-workflows",
+      "category": "testing"
+    },
+    {
+      "name": "pytest-mcp",
+      "type": "mcp",
+      "description": "Python testing framework",
+      "source": "smithery.ai",
+      "install_command": "npx pytest-mcp",
+      "verified": true
+    }
+  ],
+  "sources_searched": ["claude-code-plugins-plus", "smithery.ai", "npmjs.com"],
+  "total_available": 15000,
+  "cached": true
+}
 ```
 
 #### `sources`
@@ -158,9 +237,26 @@ Show all available data sources and their status.
 ╰────────────────────────────────────────────────────╯
 ```
 
+```json
+{
+  "sources": [
+    { "name": "claude-code-plugins-plus", "type": "plugin", "count": 258, "status": "ok" },
+    { "name": "claude-plugins-official", "type": "plugin", "count": 45, "status": "ok" },
+    { "name": "smithery.ai", "type": "mcp", "count": 500, "status": "ok" },
+    { "name": "playbooks.com", "type": "mcp", "count": 1000, "status": "ok" },
+    { "name": "npmjs.com", "type": "mcp", "count": 250, "status": "ok" },
+    { "name": "modelcontextprotocol.io", "type": "mcp", "count": 248, "status": "ok" },
+    { "name": "glama.ai", "type": "mcp", "count": 662, "status": "ok" },
+    { "name": "awesome-agent-skills", "type": "skill", "count": 339, "status": "ok" },
+    { "name": "skillsmp", "type": "skill", "count": 25000, "status": "no_key" }
+  ],
+  "total": 15000
+}
+```
+
 ## methodology
 
-Ask a question, get install commands:
+How [claude-oracle-mcp](https://github.com/Vvkmnn/claude-oracle-mcp) [works](https://github.com/Vvkmnn/claude-oracle-mcp/tree/master/src):
 
 ```
  User: "What MCP servers exist for PostgreSQL?"
@@ -205,9 +301,7 @@ Ask a question, get install commands:
 - **Quality signals**: Stars, verified badges, quality scores boost ranking
 - **Beautiful formatting**: Bordered output with 🔮 identifier
 
-## data sources
-
-**Zero-config sources (16/17):**
+**Data sources (zero-config, 16/17):**
 
 | Source                           | Type         | Count  | Method                  |
 | -------------------------------- | ------------ | ------ | ----------------------- |
@@ -232,10 +326,28 @@ Ask a question, get install commands:
 
 > **Note:** Pagination is limited for faster responses (~3s). Full datasets available through caching on subsequent searches.
 
+## alternatives
+
+Every MCP discovery tool either searches a single registry or requires separate accounts per source. Oracle aggregates 17 sources in one command.
+
+| Feature             | **oracle**                                     | 1mcpserver              | Single registry                   |
+| ------------------- | ---------------------------------------------- | ----------------------- | --------------------------------- |
+| **Resource types**  | **MCP + plugins + skills**                     | MCP servers only        | Usually one type                  |
+| **Sources**         | **17 (registries + awesome lists + marketplaces)** | Registry searches   | One source at a time              |
+| **Skills/plugins**  | **Yes (339 skills, 303 plugins)**              | No                      | Usually no                        |
+| **Setup**           | **One MCP, one command**                       | One MCP, one command    | Separate account/API per registry |
+| **Cross-source**    | **Deduplicated, ranked results**               | Per-registry            | Manual comparison                 |
+| **Caching**         | **In-memory TTL (6-24h)**                      | Per-request             | Varies                            |
+| **Install commands**| **Included in results**                        | Included in results     | Varies                            |
+
+**[1mcpserver](https://github.com/particlefuture/1mcpserver)** — MCP server discovery from multiple registries. Searches MCP servers only — no plugins, no skills. Per-registry results without cross-source dedup or ranking. No caching between requests.
+
+**[Smithery](https://smithery.ai)**, **[Glama](https://glama.ai)**, **[SkillsMP](https://skillsmp.com)** — Individual registries, each searchable independently. Requires separate accounts or API access per registry. Each covers a subset of the ecosystem — no single source has everything. Manual comparison across registries to find the best option. Oracle aggregates all of these (and 14 more sources) with deduplicated, ranked results in one query.
+
 ## development
 
 ```bash
-git clone https://github.com/vvkmnn/claude-oracle-mcp && cd claude-oracle-mcp
+git clone https://github.com/Vvkmnn/claude-oracle-mcp && cd claude-oracle-mcp
 npm install && npm run build
 npm test
 ```
@@ -243,9 +355,8 @@ npm test
 **Package requirements:**
 
 - **Node.js**: >=20.0.0 (ES modules)
-- **npm**: >=10.0.0 (package-lock v3)
 - **Runtime**: `@modelcontextprotocol/sdk`, `fast-xml-parser`
-- **Zero external databases** - works with `npx`
+- **Zero external databases** — works with `npx`
 
 **Development workflow:**
 
@@ -257,8 +368,8 @@ npm run lint           # ESLint code quality checks
 npm run lint:fix       # Auto-fix linting issues
 npm run format         # Prettier formatting (src/)
 npm run format:check   # Check formatting without changes
-npm run type-check     # TypeScript validation without emit
-npm run test           # Run help command + type check
+npm run typecheck      # TypeScript validation without emit
+npm run test           # Lint + type check
 npm run prepublishOnly # Pre-publish validation (build + lint + format:check)
 ```
 
@@ -268,7 +379,7 @@ npm run prepublishOnly # Pre-publish validation (build + lint + format:check)
 
 Contributing:
 
-- Please fork the repository and create feature branches
+- Fork the repository and create feature branches
 - Test with multiple data sources before submitting PRs
 - Follow TypeScript strict mode and [MCP protocol](https://modelcontextprotocol.io/specification) standards
 
@@ -276,28 +387,16 @@ Learn from examples:
 
 - [Official MCP servers](https://github.com/modelcontextprotocol/servers) for reference implementations
 - [TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) for best practices
-- [Creating Node.js modules](https://docs.npmjs.com/creating-node-js-modules) - NPM package development guide
-
-## alternatives
-
-**[1mcpserver](https://github.com/particlefuture/1mcpserver)** - MCP server discovery from multiple registries. **[Smithery](https://smithery.ai)**, **[Glama](https://glama.ai)**, **[SkillsMP](https://skillsmp.com)** - Individual registries, each searchable independently.
-
-| Feature             | claude-oracle-mcp                              | 1mcpserver              | Single registry                   |
-| ------------------- | ---------------------------------------------- | ----------------------- | --------------------------------- |
-| **Resource types**  | MCP + plugins + skills                         | MCP servers only        | Usually one type                  |
-| **Sources**         | 17 (registries + awesome lists + marketplaces) | Registry searches       | One source at a time              |
-| **Skills/plugins**  | Yes (339 skills, 303 plugins)                  | No                      | Usually no                        |
-| **Setup**           | One MCP, one command                           | One MCP, one command    | Separate account/API per registry |
-| **Cross-source**    | Deduplicated, ranked results                   | Per-registry            | Manual comparison                 |
-| **Caching**         | In-memory TTL (6-24h)                          | Per-request             | Varies                            |
-| **Install commands**| Included in results                            | Included in results     | Varies                            |
+- [Creating Node.js modules](https://docs.npmjs.com/creating-node-js-modules) for npm package development
 
 ## license
 
 [MIT](LICENSE)
 
----
+<hr>
 
-<a href="https://en.wikipedia.org/wiki/Cumaean_Sibyl#/media/File:Aeneas_and_the_Cumaean_Sibyl_(by_Fran%C3%A7ois_Perrier).jpg"><img src="logo/oracle.jpg" alt="Aeneas and the Cumaean Sibyl" width="336"></a>
+<p align="center">
+<a href="https://en.wikipedia.org/wiki/Cumaean_Sibyl"><img src="logo/oracle.jpg" alt="Aeneas and the Cumaean Sibyl — Claude Mellan" width="340"></a>
+</p>
 
-_[**Aeneas consulting the Cumaean Sibyl**](https://en.wikipedia.org/wiki/Cumaean_Sibyl) by [**Claude Mellan**](https://en.wikipedia.org/wiki/Claude_Mellan) - The oracle who guided him through the underworld_
+_**[Aeneas and the Cumaean Sibyl](https://en.wikipedia.org/wiki/Cumaean_Sibyl)** by **[Claude Mellan](https://en.wikipedia.org/wiki/Claude_Mellan)**. The oracle who guided Aeneas through the underworld._

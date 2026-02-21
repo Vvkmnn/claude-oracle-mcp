@@ -628,3 +628,13 @@ main().catch((error) => {
 
 **Last Updated**: 2025-12-20
 **Version**: 1.0 (Planning Document)
+
+---
+
+## Code Quality (Standardization Pass — 2026-02-21)
+
+- [ ] **Add explicit return types** — 5 functions missing return types across `index.ts` and source files (`awesome-lists.ts`, `github-plugins.ts`, `glama.ts`, `skillsmp.ts`). Low priority but improves readability.
+
+- [ ] **Re-enable `noUncheckedIndexedAccess`** — Currently disabled preemptively during cross-project standardization. Should be tested and re-enabled if the codebase handles it cleanly (oracle has simpler data patterns than historian).
+
+- [ ] **Source plugin system** — The `sources/` directory has a clean pattern. Consider formalizing the source interface for easier community contributions.

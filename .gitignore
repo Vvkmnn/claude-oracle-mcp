@@ -3,27 +3,28 @@ node_modules/
 
 # Build output
 dist/
+*.tsbuildinfo
 
-# Demo files (keep only demo.gif)
-demo.mov
-demo/*.mp4
+# Demo artifacts (keep only demo.gif)
 demo/*.cast
-demo/palette.png
-demo/DEMO_SCRIPT.md
-demo/RECORD.sh
-demo/demo.old.cast
+demo/*.mp4
+demo/*.mov
+demo/.claude/
 
 # Local configuration
 .claude/*
 !.claude/skills/
 .mcp.json
-test-mcp.json
-test_search.sh
 
 # Development
 *.log
 *.tmp
 
+# OS
+.DS_Store
+
+# npm
+*.tgz
+
 # Generated docs
 CLAUDE.md
-COMPARISON.md
