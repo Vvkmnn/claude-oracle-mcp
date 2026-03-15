@@ -106,6 +106,14 @@ export function formatSearchResults(output: SearchOutput): string {
     content.push(''); // Empty line between results
   }
 
+  // Warnings (e.g., GitHub rate limit)
+  if (output.warnings?.length) {
+    for (const w of output.warnings) {
+      content.push(`⚠ ${w}`);
+    }
+    content.push('');
+  }
+
   // Summary
   content.push(
     `Total: ${sources_searched.length} sources • ${total_available.toLocaleString()} resources available`,

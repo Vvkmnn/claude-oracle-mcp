@@ -22,7 +22,7 @@ const server = new Server(
       tools: {},
     },
     instructions:
-      'Claude Oracle discovers skills, plugins, and MCP servers from 17 sources. Use "search" to find tools by query, "browse" to explore by category, and "sources" to check data source status.',
+      'Claude Oracle discovers skills, plugins, and MCP servers from 17 registries + GitHub search + web search. Use "search" to find tools by query, "browse" to explore by category, and "sources" to check data source status.',
   },
 );
 

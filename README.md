@@ -2,7 +2,7 @@
 
 # claude-oracle-mcp
 
-An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for discovering [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, plugins, and MCP servers. Search 15,000+ resources from 17 sources with zero setup.
+An [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for discovering [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills, plugins, and MCP servers. Search 15,000+ resources from 17 registries + GitHub search + web search with zero setup.
 
 <br clear="right">
 
@@ -41,7 +41,8 @@ Install this mcp: https://github.com/Vvkmnn/claude-oracle-mcp
       "command": "npx",
       "args": ["claude-oracle-mcp"],
       "env": {
-        "SKILLSMP_API_KEY": "optional-for-semantic-search"
+        "SKILLSMP_API_KEY": "optional-for-semantic-search",
+        "GITHUB_TOKEN": "optional-for-higher-rate-limits"
       }
     }
   }
@@ -89,7 +90,7 @@ Requires the MCP server installed first. See the emporium for other Claude Code 
 
 ## features
 
-[MCP server](https://modelcontextprotocol.io/) that gives Claude access to 15,000+ skills, plugins, and MCP servers from 17 sources. Fast discovery with smart prioritization.
+[MCP server](https://modelcontextprotocol.io/) that gives Claude access to 15,000+ skills, plugins, and MCP servers from 17 registries + GitHub search + web search. Fast discovery with smart prioritization.
 
 Runs locally (with crystal vision `🔮`):
 
@@ -118,7 +119,7 @@ Search across all resources for relevant tools and solutions.
 │   npmjs.com • ✨ quality                     │
 │   Install: npx @scope/postgresql-mcp         │
 │                                              │
-│ Total: 17 sources • 15,000+ resources        │
+│ Total: 19 sources • 15,000+ resources        │
 ╰──────────────────────────────────────────────╯
 ```
 
@@ -172,7 +173,7 @@ Browse resources by category, type, or popularity.
 │   Python testing framework                   │
 │   smithery.ai • ⭐ verified                  │
 │                                              │
-│ Total: 17 sources • 15,000+ resources        │
+│ Total: 19 sources • 15,000+ resources        │
 ╰──────────────────────────────────────────────╯
 ```
 
@@ -213,7 +214,7 @@ Show all available data sources and their status.
 ```
 
 ```
-🔮 sources | 17 total
+🔮 sources | 19 total
 
 ╭─ 🔮 ─────────────────────────────── 15,000+ total ─╮
 │ Plugins (303):                                     │
@@ -268,7 +269,7 @@ How [claude-oracle-mcp](https://github.com/Vvkmnn/claude-oracle-mcp) [works](htt
               └─────────┬───────────┘
                         │
          ┌──────────────┼──────────────┐
-         │   PARALLEL SEARCH (17)       │
+         │   PARALLEL SEARCH (19)       │
          └──────────────┬───────────────┘
                         │
     ┌───────────────────┼───────────────────┐
@@ -294,7 +295,7 @@ How [claude-oracle-mcp](https://github.com/Vvkmnn/claude-oracle-mcp) [works](htt
 
 **Core features:**
 
-- **17 sources**: Smithery, npm, Glama.ai, GitHub, awesome lists + more
+- **17 registries + GitHub search + web search**: Smithery, npm, Glama.ai, GitHub, awesome lists + more
 - **15,000+ resources**: Skills, plugins, and MCP servers in one search
 - **Parallel fetching**: All sources searched simultaneously (~3 seconds)
 - **Smart caching**: In-memory TTL cache (6-24 hour expiry)
@@ -302,7 +303,7 @@ How [claude-oracle-mcp](https://github.com/Vvkmnn/claude-oracle-mcp) [works](htt
 - **Quality signals**: Stars, verified badges, quality scores boost ranking
 - **Beautiful formatting**: Bordered output with 🔮 identifier
 
-**Data sources (zero-config, 16/17):**
+**Data sources (zero-config, 16/17 registries):**
 
 | Source                           | Type         | Count  | Method                  |
 | -------------------------------- | ------------ | ------ | ----------------------- |
@@ -321,28 +322,36 @@ How [claude-oracle-mcp](https://github.com/Vvkmnn/claude-oracle-mcp) [works](htt
 | claude-plugins-official          | Plugin       | 45     | Marketplace JSON        |
 | superpowers-marketplace          | Plugin       | -      | Marketplace JSON        |
 
+**Query-based (searched per query, zero-config):**
+
+| Source                           | Type         | Count  | Method                  |
+| -------------------------------- | ------------ | ------ | ----------------------- |
+| GitHub (search)                  | MCP/Plugin   | ~20    | REST API (per query)    |
+| Web (search)                     | MCP/Plugin   | ~10    | DuckDuckGo Lite (per query) |
+
 **Optional (requires API key):**
 
 - **SkillsMP**: 25,000+ skills with semantic search ([get key](https://skillsmp.com))
+- **GITHUB_TOKEN**: Higher GitHub API rate limits (10 → 30 req/min)
 
 > **Note:** Pagination is limited for faster responses (~3s). Full datasets available through caching on subsequent searches.
 
 **Design principles:**
 
-- **Aggregated search** -- single query searches 17 sources simultaneously
-- **Zero-config** -- 16/17 sources work without API keys
+- **Aggregated search** -- single query searches 17 registries + GitHub + web simultaneously
+- **Zero-config** -- 18/19 sources work without API keys (GITHUB_TOKEN optional for rate limits)
 - **Deduplication** -- cross-source result merging by name similarity
 - **Relevance scoring** -- weighted name match, description match, and popularity
 - **Offline fallback** -- graceful degradation when sources are unreachable
 
 ## alternatives
 
-Every MCP discovery tool either searches a single registry or requires separate accounts per source. Oracle aggregates 17 sources in one command.
+Every MCP discovery tool either searches a single registry or requires separate accounts per source. Oracle aggregates 19 sources in one command.
 
 | Feature             | **oracle**                                     | 1mcpserver              | Single registry                   |
 | ------------------- | ---------------------------------------------- | ----------------------- | --------------------------------- |
 | **Resource types**  | **MCP + plugins + skills**                     | MCP servers only        | Usually one type                  |
-| **Sources**         | **17 (registries + awesome lists + marketplaces)** | Registry searches   | One source at a time              |
+| **Sources**         | **19 (registries + awesome lists + GitHub + web)** | Registry searches   | One source at a time              |
 | **Skills/plugins**  | **Yes (339 skills, 303 plugins)**              | No                      | Usually no                        |
 | **Setup**           | **One MCP, one command**                       | One MCP, one command    | Separate account/API per registry |
 | **Cross-source**    | **Deduplicated, ranked results**               | Per-registry            | Manual comparison                 |
@@ -351,7 +360,7 @@ Every MCP discovery tool either searches a single registry or requires separate 
 
 **[1mcpserver](https://github.com/particlefuture/1mcpserver)** -- MCP server discovery from multiple registries. Searches MCP servers only -- no plugins, no skills. Per-registry results without cross-source dedup or ranking. No caching between requests.
 
-**[Smithery](https://smithery.ai)**, **[Glama](https://glama.ai)**, **[SkillsMP](https://skillsmp.com)** -- Individual registries, each searchable independently. Requires separate accounts or API access per registry. Each covers a subset of the ecosystem -- no single source has everything. Manual comparison across registries to find the best option. Oracle aggregates all of these (and 14 more sources) with deduplicated, ranked results in one query.
+**[Smithery](https://smithery.ai)**, **[Glama](https://glama.ai)**, **[SkillsMP](https://skillsmp.com)** -- Individual registries, each searchable independently. Requires separate accounts or API access per registry. Each covers a subset of the ecosystem -- no single source has everything. Manual comparison across registries to find the best option. Oracle aggregates all of these (and 16 more sources) with deduplicated, ranked results in one query.
 
 ## development
 

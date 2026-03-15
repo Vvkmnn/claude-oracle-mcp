@@ -1,31 +1,39 @@
 ---
 name: claude-oracle
-description: Find tools before building - search 17 sources for skills, plugins, MCP servers when user asks "what exists for X?" or before implementing from scratch. Saves hours discovering existing solutions.
+description: Use when user asks "what exists for X?", before implementing custom MCP servers or plugins from scratch, or when browsing available tools — searches 19 sources and 15,000+ skills, plugins, and MCP servers in one query.
 ---
 
 # Claude Oracle
 
-Search 15,000+ tools before building from scratch.
+Search 15,000+ existing tools before building from scratch.
 
 ## When to Use
 
-**User asks about available tools**
-- "Are there plugins for X?" → `search`
-- "What MCP servers exist for Y?" → `search`
-- "Do we have skills for Z?" → `browse`
+**User asks about available tools** → `search`. One command checks 19 sources simultaneously.
 
-**Before implementing**
-- Starting new work → Check if tools exist first
-- User mentions a need → Search before building
-- Planning phase → Discover existing solutions
+**Before implementing custom tooling** → An MCP server, plugin, or skill may already exist. Check before building.
 
-**Browsing options**
-- Category search → `browse` with category
-- Check all sources → `sources`
+**Browsing by category** → `browse` with a category. `sources` to check data source health.
 
-## Best Practice
+## Quick Reference
 
-Check oracle BEFORE:
-- Building custom tools (existing ones may work)
-- WebSearch for tools (oracle has 17 sources)
-- Proposing implementation (tools might already solve it)
+| Tool | When | What it returns |
+|------|------|----------------|
+| `search` | Need something specific | Ranked, deduplicated results with install commands from 19 sources |
+| `browse` | Exploring a category | Results filtered by type (MCP, plugin, skill) or category |
+| `sources` | Checking data source health | All 19 sources with status and resource counts |
+
+## Sources (19, zero-config)
+
+MCP servers: Smithery, npm, Glama.ai, Official Registry, Playbooks, 3 awesome lists.
+Plugins: claude-code-plugins-plus, claude-plugins-official, superpowers-marketplace.
+Skills: awesome-agent-skills, 2 awesome-claude-code lists.
+Dynamic: GitHub search (query-based), web search (query-based).
+Optional: SkillsMP (25,000+ skills, requires API key).
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Building before searching | Always search oracle first — existing tools save hours |
+| WebSearch for tools | Oracle has 19 specialized sources, more complete than web |

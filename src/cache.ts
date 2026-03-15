@@ -71,4 +71,6 @@ export const TTL = {
   MCP_REGISTRY: 6 * 60 * 60 * 1000, // 6 hours
   NPM_REGISTRY: 12 * 60 * 60 * 1000, // 12 hours
   PLAYBOOKS: 12 * 60 * 60 * 1000, // 12 hours
+  GITHUB_SEARCH: 6 * 60 * 60 * 1000, // 6 hours
+  WEB_SEARCH: 60 * 60 * 1000, // 1 hour
 } as const;

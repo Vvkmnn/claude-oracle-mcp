@@ -74,6 +74,7 @@ export interface SearchOutput {
   results: Resource[];
   sources_searched: string[];
   total_available: number;
+  warnings?: string[];
 }
 
 /**
